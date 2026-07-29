@@ -19,7 +19,7 @@ export default async function HomePage({
           Browse available properties near you.
         </p>
       </div>
-      {/* <PropertySearchBar></PropertySearchBar> */}
+      <PropertySearchBar></PropertySearchBar>
       </div>
 
       <Suspense fallback={<PropertyListSkeleton />}>

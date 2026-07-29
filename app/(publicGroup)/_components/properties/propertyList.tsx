@@ -2,6 +2,7 @@
 import { IProperty } from "@/lib/types";
 import { getHouseRentalProperties } from "../../_actions/getHouseRentalNews";
 import { PropertyCard } from "./propertyCard";
+import { PropertyPagination } from "./propertyPagination";
 
 
 
@@ -32,6 +33,7 @@ export async function PropertyList({
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
+       <PropertyPagination meta={result.data.meta} />
     </div>
   );
 }

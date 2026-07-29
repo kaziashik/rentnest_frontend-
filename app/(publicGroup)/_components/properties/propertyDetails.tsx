@@ -4,23 +4,33 @@ import { BedDoubleIcon, BathIcon, MapPinIcon } from "lucide-react";
 import { getPropertyById } from "../../_actions/getPropertyById";
 import { notFound } from "next/navigation";
 
+function isValidImageUrl(url?: string): url is string {
+  if (!url) return false;
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function PropertyDetails({ propertyId }: { propertyId: string }) {
-  // console.log("get property by is",propertyId);
   const result = await getPropertyById(propertyId);
-  
 
   if (!result.success || !result.data) {
     notFound();
   }
 
   const property = result.data;
+  const rawImage = property.property_image?.[0];
+  const image = isValidImageUrl(rawImage) ? rawImage : null;
 
   return (
     <div className="space-y-6">
       <div className="relative h-96 w-full overflow-hidden rounded-xl">
-        {property.property_image?.[0] ? (
+        {image ? (
           <Image
-            src={property.property_image[0]}
+            src={image}
             alt={property.title}
             fill
             className="object-cover"
