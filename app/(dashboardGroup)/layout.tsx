@@ -8,7 +8,7 @@ const DashboardGroupLayout = async ({
   children: React.ReactNode;
 }) => {
   const user = await getMe();
-  console.log("DASHBOARD LAYOUT — user.success:", user.success, user);
+  // console.log("DASHBOARD LAYOUT — user.success:", user.success, user);
 
   if (!user.success) {
     redirect("/login");
