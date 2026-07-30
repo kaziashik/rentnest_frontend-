@@ -19,7 +19,7 @@ export default function DashboardSidebar( {user} : NavbarProps) {
   const pathname = usePathname();
 
   
-  console.log("checking user",user);
+  // console.log("checking user",user);
 
    let navItems : ISidebarItem[]  = [];
 
