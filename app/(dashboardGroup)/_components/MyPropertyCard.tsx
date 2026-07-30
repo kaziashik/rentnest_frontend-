@@ -3,6 +3,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/componen
 import { ICategory, IProperty } from "@/lib/types";
 import { BedIcon, MapPinIcon, ShowerHeadIcon } from "lucide-react";
 import { PropertyFormDialog } from "./PropertyFormDialog";
+import { DeletePropertyDialog } from "./DeletePropertyDialog";
 
 type MyPropertyCardProps = {
     property: IProperty;
@@ -20,8 +21,9 @@ export function MyPropertyCard({ property, categories }: MyPropertyCardProps) {
                     <Badge variant="outline">{property.category.name}</Badge>
                 </div>
                 <CardTitle className="text-lg">{property.title}</CardTitle>
-                <CardAction>
+                <CardAction className="flex gap-2">
                     <PropertyFormDialog mode="edit" property={property} categories={categories} />
+                    <DeletePropertyDialog propertyId={property.id} />
                 </CardAction>
             </CardHeader>
             <CardContent className="space-y-3">
