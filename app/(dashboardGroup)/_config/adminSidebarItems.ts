@@ -19,7 +19,7 @@ export const ADMIN_SIDEBAR_ITEMS: ISidebarItem[] = [
   },
   {
     label: "Categories",
-    href: "/dashboard/admin/categories",
+    href: "/admin-dashboard/categories",
     icon: ShieldCheck,
   },
 ];
