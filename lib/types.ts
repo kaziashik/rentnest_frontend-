@@ -140,3 +140,33 @@ export interface IAdminDashboard {
         revenue: string;
     };
 }
+
+
+export type PaymentStatus = "PAID" | "PENDING" | "FAILED";
+
+export interface IPayment {
+    id: string;
+    requestId: string;
+    amount: string;
+    paymentMethod: string;
+    transactionId: string;
+    paymentStatus: PaymentStatus;
+    paidAt: string;
+    createdAt: string;
+    rentalRequest: {
+        id: string;
+        propertyId: string;
+        tenantId: string;
+        status: string;
+        moveInDate: string;
+        message: string;
+        createdAt: string;
+        updatedAt: string;
+        property: {
+            id: string;
+            title: string;
+            location: string;
+            rentPrice: string;
+        };
+    };
+}
