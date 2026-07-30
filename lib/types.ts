@@ -7,12 +7,7 @@ import { ForwardRefExoticComponent, RefAttributes } from "react";
 export type IRole = "TENANT" | "LANDLORD" | "ADMIN";
 export type IActiveStatus = "ACTIVE" | "BANNED";
 export type IAvailability = "AVAILABLE" | "UNAVAILABLE";
-export type IRentalStatus =
-  | "PENDING"
-  | "APPROVED"
-  | "REJECTED"
-  | "ACTIVE"
-  | "COMPLETED";
+
 export type IPaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
 
 
@@ -80,6 +75,36 @@ export interface ICategory {
     id: string;
     name: string;
 }
+
+
+export type IRentalStatus =
+  | "PENDING"
+  | "APPROVED"
+  | "REJECTED"
+  | "ACTIVE"
+  | "COMPLETED";
+
+export interface IRentalRequest {
+    id: string;
+    propertyId: string;
+    tenantId: string;
+    status: IRentalStatus;
+    moveInDate: string;
+    message: string;
+    createdAt: string;
+    updatedAt: string;
+    tenant: {
+        id: string;
+        name: string;
+        email: string;
+    };
+    property: {
+        id: string;
+        title: string;
+        rentPrice: string;
+    };
+}
+
 
 
 

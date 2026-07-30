@@ -19,7 +19,7 @@ export const LANDLORD_SIDEBAR_ITEMS: ISidebarItem[] = [
   },
   {
     label: "Requests",
-    href: "/dashboard/landlord/requests",
+    href: "/landlord-dashboard/properties/requests",
     icon: ListChecks,
   },
 ];
