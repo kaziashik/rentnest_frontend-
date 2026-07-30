@@ -5,7 +5,8 @@ import { RentalRequestCard } from "./RentalRequestCard";
 
 export async function RentalRequestsList() {
   const result = await getRentalRequests();
-
+  
+// console.log(result);
   if (!result.success || !result.data?.length) {
     return (
       <p className="py-12 text-center text-muted-foreground">

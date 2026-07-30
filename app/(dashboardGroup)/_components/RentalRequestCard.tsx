@@ -19,6 +19,7 @@ export function RentalRequestCard({ request }: RentalRequestCardProps) {
     const handleStatusChange = (status: string) => {
         startTransition(async () => {
             const result = await updateRentalStatus(request.id, status);
+            // console.log("check request statas",result);
 
             if (result.success) {
                 toast.success(result.message || "Request status updated successfully");
@@ -64,7 +65,7 @@ export function RentalRequestCard({ request }: RentalRequestCardProps) {
                     <span>RM{request.property.rentPrice}/mo</span>
                 </div>
 
-                {request.status === "ACTIVE" && (
+                {request.status === "PENDING" && (
                     <div className="flex gap-2 pt-2">
                         <Button
                             size="sm"
