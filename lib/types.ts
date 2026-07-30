@@ -1,5 +1,7 @@
-// import { LucideProps } from "lucide-react";
-// import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { LucideProps } from "lucide-react";
+
+
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 // ---------- Enums ----------
 export type IRole = "TENANT" | "LANDLORD" | "ADMIN";
@@ -15,17 +17,41 @@ export type IPaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
 
 
 // ---------- User ----------
-export type IUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: IRole;
-  phone: string;
-  photo: string | null;
-  activeStatus: IActiveStatus;
-  createdAt: string;
-  updatedAt: string;
+type IUser = {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    phone: string;
+    photo: string | null;
+    activeStatus: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 };
+
+
+export type NavbarProps = {
+    user: IUser
+}
+
+
+export type ISidebarItem = {
+    label: string,
+    href: string,
+    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
+}
+
+
+
+
+
+
+
+
 
 export type IRegisterPayload = {
   name: string;
@@ -192,14 +218,8 @@ export type IUserStatusPayload = {
   activeStatus: IActiveStatus;
 };
 
-// ---------- UI / Component Props ----------
-export type NavbarProps = {
-  user: IUser | null;
-};
 
-// export type ISidebarItem = {
-//   label: string;
-//   href: string;
-//   icon: ForwardRefExoticComponent
-//     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-// };
+
+
+
+

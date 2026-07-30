@@ -9,12 +9,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { LogOut, Settings, User } from "lucide-react";
+import { LayoutDashboard, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { logout } from "@/service/logout";
+import { NavbarProps } from "@/lib/types";
 
 // Navigation items configuration
 const navItems = [
@@ -26,45 +27,29 @@ const navItems = [
 
 // User menu items configuration
 const userMenuItems = [
+    { label : "Dashboard", icon : LayoutDashboard, action : "dashboard"},
   { label: "Profile", icon: User, action: "profile" },
   { label: "Settings", icon: Settings, action: "settings" },
 ];
 
-type Role = "TENANT" | "LANDLORD" | "ADMIN";
-type ActiveStatus = "ACTIVE" | "BANNED";
-
-type IUserProfile = {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  phone: string;
-  photo: string | null;
-  activeStatus: ActiveStatus;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type IUser =
-  | {
-      success: true;
-      StatusCodes: number;
-      message: string;
-      data: IUserProfile;
-      Meta: null;
-    }
-  | {
-      success: false;
-      message: string;
-    };
-
-type NavbarProps = {
-  user: IUser;
-};
 
 export function Navbar({user} : NavbarProps) {
     const router = useRouter()
   const handleUserMenuAction = async (action: string) => {
+
+     if(action === "dashboard" ){
+      if(user.data.role === "TENANT"){
+        router.push("/dashboard")
+      }
+      else if(user.data.role === "LANDLORD"){
+        router.push("/landlord-dashboard")
+      }
+      else if(user.data.role === "ADMIN"){
+        router.push("/admin-dashboard")
+      }
+
+      return;
+    }
 
     if(action === "logout"){
         await logout();
