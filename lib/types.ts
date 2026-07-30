@@ -117,3 +117,26 @@ export type IRegisterPayload = {
   role: IRole;
   phone: string;
 };
+
+
+export interface IAdminDashboard {
+    users: {
+        total: number;
+        tenants: number;
+        landlords: number;
+    };
+    properties: {
+        total: number;
+        available: number;
+        rented: number;
+    };
+    rentalRequests: {
+        total: number;
+        pending: number;
+        approved: number;
+    };
+    payments: {
+        total: number;
+        revenue: string;
+    };
+}

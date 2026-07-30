@@ -1,5 +1,6 @@
 "use client"
 
+import { updateRentalStatus } from "@/app/(dashboardGroup)/_actions/updateRentalStatus";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import { IRentalRequest } from "@/lib/types";
 import { CalendarIcon, MailIcon, CheckIcon, XIcon } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { updateRentalStatus } from "../_actions/updateRentalStatus";
+
 
 type RentalRequestCardProps = {
     request: IRentalRequest;

@@ -68,17 +68,7 @@ async function LandlordStats() {
   );
 }
 
-function LandlordStatsSkeleton() {
-  return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="h-28 animate-pulse rounded-2xl bg-muted" />
-      ))}
-    </div>
-  );
-}
-
-const landlordDashboardPage = () => {
+const LandlordDashboardPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -96,7 +86,7 @@ const landlordDashboardPage = () => {
         </Link>
       </div>
 
-      <Suspense fallback={<LandlordStatsSkeleton />}>
+      <Suspense fallback={<div className="h-24 animate-pulse rounded-2xl bg-muted" />}>
         <LandlordStats />
       </Suspense>
 
@@ -121,4 +111,4 @@ const landlordDashboardPage = () => {
   );
 }
 
-export default landlordDashboardPage
+export default LandlordDashboardPage

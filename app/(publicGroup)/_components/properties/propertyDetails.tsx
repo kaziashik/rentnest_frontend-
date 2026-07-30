@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { BedDoubleIcon, BathIcon, MapPinIcon } from "lucide-react";
 import { getPropertyById } from "../../_actions/getPropertyById";
 import { notFound } from "next/navigation";
+import { RequestRentalDialog } from "../RequestRentalDialog";
+
 
 function isValidImageUrl(url?: string): url is string {
   if (!url) return false;
@@ -70,6 +72,10 @@ export async function PropertyDetails({ propertyId }: { propertyId: string }) {
         <span className="flex items-center gap-1">
           <BathIcon className="size-4" /> {property.bathRooms} Bathrooms
         </span>
+      </div>
+
+      <div className="max-w-xs">
+        <RequestRentalDialog propertyId={property.id} availability={property.availability} />
       </div>
 
       {property.propertyOwner && (
