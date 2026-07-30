@@ -1,13 +1,15 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IProperty } from "@/lib/types";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ICategory, IProperty } from "@/lib/types";
 import { BedIcon, MapPinIcon, ShowerHeadIcon } from "lucide-react";
+import { PropertyFormDialog } from "./PropertyFormDialog";
 
 type MyPropertyCardProps = {
     property: IProperty;
+    categories: ICategory[];
 }
 
-export function MyPropertyCard({ property }: MyPropertyCardProps) {
+export function MyPropertyCard({ property, categories }: MyPropertyCardProps) {
     return (
         <Card>
             <CardHeader>
@@ -18,6 +20,9 @@ export function MyPropertyCard({ property }: MyPropertyCardProps) {
                     <Badge variant="outline">{property.category.name}</Badge>
                 </div>
                 <CardTitle className="text-lg">{property.title}</CardTitle>
+                <CardAction>
+                    <PropertyFormDialog mode="edit" property={property} categories={categories} />
+                </CardAction>
             </CardHeader>
             <CardContent className="space-y-3">
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
