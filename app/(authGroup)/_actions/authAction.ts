@@ -82,16 +82,14 @@ export const loginAction = async (
 //     registion user
 // ##########################
 
-
- type RegisterState =
+type RegisterState =
   | {
       success: boolean;
       message: string;
     }
   | false;
 
-
-  export const registerAction = async (
+export const registerAction = async (
     prevState: RegisterState,
     formData: FormData,
   ) => {
@@ -99,10 +97,10 @@ export const loginAction = async (
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
-      role: formData.get("role"), //"tenant | landlord"
+      role: formData.get("role"),
       phone: formData.get("phone"),
+      photo: formData.get("photo") || null,
     };
-
     const res = await fetch(
       `${process.env.BACKEND_API_URL}/api/users/register`,
       {
@@ -113,11 +111,8 @@ export const loginAction = async (
     );
     const result = await res.json();
     if (result.success) {
-     
       redirect("/login");
     }
-
-   
 
     return result
   };
