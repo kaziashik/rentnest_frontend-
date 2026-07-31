@@ -21,7 +21,8 @@ export const updateProfile = async (currentRole: string, prevState: ProfileState
     const payload = {
         name: formData.get("name"),
         phone: formData.get("phone"),
-        role: currentRole, // kept unchanged, not user-editable
+        photo: formData.get("photo") || null,
+        role: currentRole,
     }
 
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/updateProfile`, {
