@@ -5,17 +5,7 @@ import { getPropertyById } from "../../_actions/getPropertyById";
 import { notFound } from "next/navigation";
 import { RequestRentalDialog } from "../RequestRentalDialog";
 import { PropertyReviews } from "./PropertyReviews";
-
-
-function isValidImageUrl(url?: string): url is string {
-  if (!url) return false;
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { PropertyImageGallery } from "./PropertyImageGallery";
 
 export async function PropertyDetails({ propertyId }: { propertyId: string }) {
   const result = await getPropertyById(propertyId);
@@ -25,25 +15,10 @@ export async function PropertyDetails({ propertyId }: { propertyId: string }) {
   }
 
   const property = result.data;
-  const rawImage = property.property_image?.[0];
-  const image = isValidImageUrl(rawImage) ? rawImage : null;
 
   return (
     <div className="space-y-6">
-      <div className="relative h-96 w-full overflow-hidden rounded-xl">
-        {image ? (
-          <Image
-            src={image}
-            alt={property.title}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
-            No image
-          </div>
-        )}
-      </div>
+      <PropertyImageGallery images={property.property_image ?? []} title={property.title} />
 
       <div className="flex items-start justify-between">
         <div>
