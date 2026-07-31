@@ -18,7 +18,7 @@ type MyRentalRequestCardProps = {
 export function MyRentalRequestCard({ request, hasReviewed, hasPaid }: MyRentalRequestCardProps) {
     const [justReviewed, setJustReviewed] = useState(false);
 
-    const showReviewButton = request.status === "ACTIVE" && !hasReviewed && !justReviewed;
+    const showReviewButton = request.status === "COMPLETED" && !hasReviewed && !justReviewed;
     const showPayButton = request.status === "APPROVED" && !hasPaid;
 
     return (

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IRentalRequest } from "@/lib/types";
 import { CalendarIcon, MailIcon, CheckIcon, XIcon } from "lucide-react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { updateRentalStatus } from "../_actions/updateRentalStatus";
 import { getStatusBadgeClass } from "@/lib/statusBadge";
@@ -16,14 +16,15 @@ type RentalRequestCardProps = {
 
 export function RentalRequestCard({ request }: RentalRequestCardProps) {
     const [isPending, startTransition] = useTransition();
+    const [localStatus, setLocalStatus] = useState(request.status);
 
     const handleStatusChange = (status: string) => {
         startTransition(async () => {
             const result = await updateRentalStatus(request.id, status);
-            // console.log("check request statas",result);
 
             if (result.success) {
                 toast.success(result.message || "Request status updated successfully");
+                setLocalStatus(status as typeof request.status);
             } else {
                 toast.error(result.message || "Something went wrong");
             }
@@ -34,8 +35,8 @@ export function RentalRequestCard({ request }: RentalRequestCardProps) {
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <Badge variant="outline" className={getStatusBadgeClass(request.status)}>
-                        {request.status}
+                    <Badge variant="outline" className={getStatusBadgeClass(localStatus)}>
+                        {localStatus}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
                         {new Date(request.createdAt).toLocaleDateString("en-US")}
@@ -66,7 +67,7 @@ export function RentalRequestCard({ request }: RentalRequestCardProps) {
                     <span>RM{request.property.rentPrice}/mo</span>
                 </div>
 
-                {request.status === "PENDING" && (
+                {localStatus === "PENDING" && (
                     <div className="flex gap-2 pt-2">
                         <Button
                             size="sm"
