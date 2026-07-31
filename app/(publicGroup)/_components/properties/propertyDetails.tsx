@@ -4,6 +4,7 @@ import { BedDoubleIcon, BathIcon, MapPinIcon } from "lucide-react";
 import { getPropertyById } from "../../_actions/getPropertyById";
 import { notFound } from "next/navigation";
 import { RequestRentalDialog } from "../RequestRentalDialog";
+import { PropertyReviews } from "./PropertyReviews";
 
 
 function isValidImageUrl(url?: string): url is string {
@@ -85,6 +86,8 @@ export async function PropertyDetails({ propertyId }: { propertyId: string }) {
           <p className="text-sm text-muted-foreground">{property.propertyOwner.email}</p>
         </div>
       )}
+
+      <PropertyReviews propertyId={property.id} />
     </div>
   );
 }

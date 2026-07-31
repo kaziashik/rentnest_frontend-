@@ -196,4 +196,15 @@ export interface IReview {
     rating: number;
     comment: string;
     createdAt: string;
+    tenant: {
+        name: string;
+        photo: string | null;
+    };
+}
+
+
+export interface IPropertyReviewsData {
+    reviews: IReview[];
+    totalCount: number;
+    averageRating: number;
 }
