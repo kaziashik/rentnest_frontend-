@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: "example.com"
+      },
+      {
+        hostname: "i.ibb.co"
       }
     ]
   }

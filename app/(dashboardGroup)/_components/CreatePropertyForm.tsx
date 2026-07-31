@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ICategory } from "@/lib/types";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { XIcon } from "lucide-react";
 import { createProperty } from "../_actions/propertyActions";
-
 
 type CreatePropertyFormProps = {
     categories: ICategory[];
@@ -16,6 +16,8 @@ type CreatePropertyFormProps = {
 
 export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
     const router = useRouter();
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
+    const [uploading, setUploading] = useState(false);
 
     const [state, formAction, pending] = useActionState(createProperty, null);
 
@@ -29,6 +31,48 @@ export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
             toast.error(state.message || "Something went wrong");
         }
     }, [state, router]);
+
+    const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        setUploading(true);
+
+        try {
+            const uploadPromises = Array.from(files).map(async (file) => {
+                const uploadFormData = new FormData();
+                uploadFormData.append("image", file);
+
+                const res = await fetch("/api/upload-image", {
+                    method: "POST",
+                    body: uploadFormData,
+                });
+
+                const result = await res.json();
+                return result.success ? result.url : null;
+            });
+
+            const urls = await Promise.all(uploadPromises);
+            const successfulUrls = urls.filter((url): url is string => !!url);
+
+            setImageUrls((prev) => [...prev, ...successfulUrls]);
+
+            if (successfulUrls.length < files.length) {
+                toast.error("Some images failed to upload");
+            } else {
+                toast.success(`${successfulUrls.length} image(s) uploaded`);
+            }
+        } catch {
+            toast.error("Image upload failed");
+        } finally {
+            setUploading(false);
+            e.target.value = "";
+        }
+    };
+
+    const removeImage = (index: number) => {
+        setImageUrls((prev) => prev.filter((_, i) => i !== index));
+    };
 
     return (
         <form action={formAction} className="max-w-2xl space-y-4">
@@ -81,8 +125,41 @@ export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="property_image">Image URLs (comma separated)</Label>
-                <Input id="property_image" name="property_image" placeholder="https://..., https://..." required />
+                <Label htmlFor="images">Property images</Label>
+                <Input
+                    id="images"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImagesChange}
+                    disabled={uploading}
+                />
+                {uploading && <p className="text-xs text-muted-foreground">Uploading...</p>}
+
+                {imageUrls.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2 pt-2 sm:grid-cols-4">
+                        {imageUrls.map((url, index) => (
+                            <div key={url} className="relative">
+                                <img
+                                    src={url}
+                                    alt={`Property image ${index + 1}`}
+                                    className="h-20 w-full rounded-md object-cover"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeImage(index)}
+                                    className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-red-500 text-white"
+                                >
+                                    <XIcon className="size-3" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {imageUrls.map((url) => (
+                    <input key={url} type="hidden" name="property_image" value={url} />
+                ))}
             </div>
 
             <div className="space-y-2">
@@ -98,7 +175,7 @@ export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
                 </select>
             </div>
 
-            <Button type="submit" disabled={pending}>
+            <Button type="submit" disabled={pending || uploading || imageUrls.length === 0}>
                 {pending ? "Creating..." : "Create Property"}
             </Button>
         </form>
