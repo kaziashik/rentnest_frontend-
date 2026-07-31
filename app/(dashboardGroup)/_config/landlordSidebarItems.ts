@@ -1,12 +1,17 @@
 import { ISidebarItem } from "@/lib/types";
-import { LayoutDashboard, Home, ListChecks, PlusCircle } from "lucide-react";
+import { LayoutDashboard, Home, ListChecks, PlusCircle, User } from "lucide-react";
 
 export const LANDLORD_SIDEBAR_ITEMS: ISidebarItem[] = [
-  {
+   {
     label: "Dashboard",
-    href: "/dashboard/landlord",
+    href: "/landlord-dashboard",
     icon: LayoutDashboard,
   },
+  {
+    label: "Profile",
+    href: "/landlord-dashboard/profile",
+    icon: User,
+},
   {
     label: "My Properties",
     href: "/landlord-dashboard/properties",
@@ -18,7 +23,7 @@ export const LANDLORD_SIDEBAR_ITEMS: ISidebarItem[] = [
     icon: PlusCircle,
   },
   {
-    label: "Requests",
+    label: " Rent Requests",
     href: "/landlord-dashboard/properties/requests",
     icon: ListChecks,
   },

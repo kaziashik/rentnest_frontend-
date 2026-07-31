@@ -1,17 +1,25 @@
 import { ISidebarItem } from "@/lib/types";
-import { LayoutDashboard, Search, FileText, CreditCard, Star, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  Search,
+  FileText,
+  CreditCard,
+  Star,
+  User,
+} from "lucide-react";
 
 export const TENANT_SIDEBAR_ITEMS: ISidebarItem[] = [
   {
     label: "Dashboard",
-    href: "/tenant-dashboard",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    label: "Browse Properties",
-    href: "/tenant-dashboard/browse",
-    icon: Search,
+    label: "Profile",
+    href: "/tenant-dashboard/profile",
+    icon: User,
   },
+ 
   {
     label: "My Requests",
     href: "/tenant-dashboard/requests",
@@ -27,9 +35,9 @@ export const TENANT_SIDEBAR_ITEMS: ISidebarItem[] = [
     href: "/dashboard/reviews",
     icon: Star,
   },
-  {
-    label: "Profile",
-    href: "/tenant-dashboard/profile",
-    icon: User,
+   {
+    label: "Rent a House",
+    href: "/",
+    icon: Search,
   },
 ];

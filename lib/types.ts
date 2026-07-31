@@ -208,3 +208,16 @@ export interface IPropertyReviewsData {
     totalCount: number;
     averageRating: number;
 }
+
+
+export interface IProfile {
+    id: string;
+    name: string;
+    email: string;
+    role: IRole;
+    phone: string | null;
+    photo: string | null;
+    activeStatus: IActiveStatus;
+    createdAt: string;
+    updatedAt: string;
+}
