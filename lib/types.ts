@@ -88,7 +88,7 @@ export interface IRentalRequest {
     id: string;
     propertyId: string;
     tenantId: string;
-    status: IRentalStatus;
+    status: IRentalStatus;   
     moveInDate: string;
     message: string;
     createdAt: string;
@@ -220,4 +220,27 @@ export interface IProfile {
     activeStatus: IActiveStatus;
     createdAt: string;
     updatedAt: string;
+}
+
+
+export interface IAdminDashboard {
+    users: {
+        total: number;
+        tenants: number;
+        landlords: number;
+    };
+    properties: {
+        total: number;
+        available: number;
+        rented: number;
+    };
+    rentalRequests: {
+        total: number;
+        pending: number;
+        approved: number;
+    };
+    payments: {
+        total: number;
+        revenue: string;
+    };
 }

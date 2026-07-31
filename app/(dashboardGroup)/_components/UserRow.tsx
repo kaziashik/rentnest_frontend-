@@ -61,8 +61,14 @@ export function UserRow({ user }: UserRowProps) {
             <div className="space-y-1">
                 <div className="flex items-center gap-2">
                     <p className="font-medium">{user.name}</p>
-                    <Badge variant="outline">{user.role}</Badge>
-                    <Badge variant={isBanned ? "destructive" : "default"}>
+                    <Badge
+                        variant="outline"
+                        className={
+                            isBanned
+                                ? "border-red-500 bg-red-50 text-red-700"
+                                : "border-green-500 bg-green-50 text-green-700"
+                        }
+                    >
                         {user.activeStatus}
                     </Badge>
                 </div>

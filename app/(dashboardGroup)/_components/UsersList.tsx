@@ -1,6 +1,6 @@
 import { IUserData } from "@/lib/types";
 import { getAllUsers } from "../_actions/getAllUsers";
-import { UserRow } from "./UserRow";
+import { UsersTable } from "./UsersTable";
 
 export async function UsersList() {
   const result = await getAllUsers();
@@ -13,11 +13,5 @@ export async function UsersList() {
     );
   }
 
-  return (
-    <div className="space-y-3">
-      {result.data.map((user: IUserData) => (
-        <UserRow key={user.id} user={user} />
-      ))}
-    </div>
-  );
+  return <UsersTable users={result.data} />;
 }

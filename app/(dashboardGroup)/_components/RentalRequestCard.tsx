@@ -8,6 +8,7 @@ import { CalendarIcon, MailIcon, CheckIcon, XIcon } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateRentalStatus } from "../_actions/updateRentalStatus";
+import { getStatusBadgeClass } from "@/lib/statusBadge";
 
 type RentalRequestCardProps = {
     request: IRentalRequest;
@@ -33,7 +34,7 @@ export function RentalRequestCard({ request }: RentalRequestCardProps) {
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <Badge variant={request.status === "ACTIVE" ? "outline" : "default"}>
+                    <Badge variant="outline" className={getStatusBadgeClass(request.status)}>
                         {request.status}
                     </Badge>
                     <span className="text-xs text-muted-foreground">

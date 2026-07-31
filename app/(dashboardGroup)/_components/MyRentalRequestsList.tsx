@@ -24,10 +24,11 @@ export async function MyRentalRequestsList() {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {result.data.map((request: IRentalRequest | any) => (
-        <MyRentalRequestCard
-          key={request.id}
-          request={request}
-          hasReviewed={reviewedRequestIds.has(request.id)}
+          <MyRentalRequestCard
+        key={request.id}
+        request={request}
+        hasReviewed={reviewedRequestIds.has(request.id)}
+        hasPaid={false}
         />
       ))}
     </div>

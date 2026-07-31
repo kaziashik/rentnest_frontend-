@@ -3,25 +3,29 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IRentalRequest } from "@/lib/types";
+import { getStatusBadgeClass } from "@/lib/statusBadge";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { WriteReviewDialog } from "./WriteReviewDialog";
+import { PayNowButton } from "./PayNowButton";
 
 type MyRentalRequestCardProps = {
     request: IRentalRequest;
     hasReviewed: boolean;
+    hasPaid: boolean;
 }
 
-export function MyRentalRequestCard({ request, hasReviewed }: MyRentalRequestCardProps) {
+export function MyRentalRequestCard({ request, hasReviewed, hasPaid }: MyRentalRequestCardProps) {
     const [justReviewed, setJustReviewed] = useState(false);
 
-    const showReviewButton = request.status === "COMPLETED" && !hasReviewed && !justReviewed;
+    const showReviewButton = request.status === "ACTIVE" && !hasReviewed && !justReviewed;
+    const showPayButton = request.status === "APPROVED" && !hasPaid;
 
     return (
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <Badge variant={request.status === "ACTIVE" ? "outline" : "default"}>
+                    <Badge variant="outline" className={getStatusBadgeClass(request.status)}>
                         {request.status}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
@@ -44,6 +48,8 @@ export function MyRentalRequestCard({ request, hasReviewed }: MyRentalRequestCar
                     <span>Rent</span>
                     <span>RM{request.property.rentPrice}/mo</span>
                 </div>
+
+                {showPayButton && <PayNowButton requestId={request.id} />}
 
                 {showReviewButton && (
                     <WriteReviewDialog

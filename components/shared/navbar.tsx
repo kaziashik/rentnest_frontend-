@@ -1,12 +1,12 @@
 "use client";
 
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import { LayoutDashboard, LogOut, Settings, User } from "lucide-react";
@@ -27,34 +27,34 @@ const navItems = [
 
 // User menu items configuration
 const userMenuItems = [
-    { label : "Dashboard", icon : LayoutDashboard, action : "dashboard"},
+  { label: "Dashboard", icon: LayoutDashboard, action: "dashboard" },
   { label: "Profile", icon: User, action: "profile" },
   { label: "Settings", icon: Settings, action: "settings" },
 ];
 
 
-export function Navbar({user} : NavbarProps) {
-    const router = useRouter()
+export function Navbar({ user }: NavbarProps) {
+  const router = useRouter()
   const handleUserMenuAction = async (action: string) => {
 
-     if(action === "dashboard" ){
-      if(user.data.role === "TENANT"){
+    if (action === "dashboard") {
+      if (user.data.role === "TENANT") {
         router.push("/dashboard")
       }
-      else if(user.data.role === "LANDLORD"){
+      else if (user.data.role === "LANDLORD") {
         router.push("/landlord-dashboard")
       }
-      else if(user.data.role === "ADMIN"){
+      else if (user.data.role === "ADMIN") {
         router.push("/admin-dashboard")
       }
 
       return;
     }
 
-    if(action === "logout"){
-        await logout();
-        toast.success("User Logged Out Successfully!");
-        router.push("/login");
+    if (action === "logout") {
+      await logout();
+      toast.success("User Logged Out Successfully!");
+      router.push("/login");
     }
   };
 
@@ -85,52 +85,61 @@ export function Navbar({user} : NavbarProps) {
           {/* User Dropdown */}
           {
             user.success ? (
-                <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="cursor-pointer">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="w-4 h-4 text-primary" />
-                </div>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-medium">
-                    {user.data?.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {user.data?.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {userMenuItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <DropdownMenuItem
-                    key={item.action}
-                    onClick={() => handleUserMenuAction(item.action)}
-                  >
-                    <Icon className="w-4 h-4 mr-2" />
-                    <span>{item.label}</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="cursor-pointer">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="w-4 h-4 text-primary" />
+                    </div>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-medium">
+                        {user.data?.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {user.data?.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {userMenuItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <DropdownMenuItem
+                        key={item.action}
+                        onClick={() => handleUserMenuAction(item.action)}
+                      >
+                        <Icon className="w-4 h-4 mr-2" />
+                        <span>{item.label}</span>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={async () => {
+                    await handleUserMenuAction("logout");
+                  }}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    <span>Log out</span>
                   </DropdownMenuItem>
-                );
-              })}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={async () => {
-                await handleUserMenuAction("logout");
-              }}>
-                <LogOut className="w-4 h-4 mr-2" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-            ) : <Link href={"/login"} >
-                   <Button className="cursor-pointer">
-                        Login
-                   </Button>
-            </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link href="/register">
+                  <Button variant="outline" className="cursor-pointer rounded-full px-5">
+                    Sign up
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button className="cursor-pointer rounded-full px-5">
+                    Login
+                  </Button>
+                </Link>
+              </div>
+            )
           }
         </div>
       </div>
