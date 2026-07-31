@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { logout } from "@/service/logout";
 import { NavbarProps } from "@/lib/types";
+import { ThemeToggle } from "./ThemeToggle";
 
 // Navigation items configuration
 const navItems = [
@@ -62,6 +63,7 @@ export function Navbar({ user }: NavbarProps) {
     <nav className="border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+
           {/* Logo */}
           <Link href="/" className="group flex shrink-0 items-center gap-2">
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform duration-300 group-hover:scale-105">
@@ -85,17 +87,29 @@ export function Navbar({ user }: NavbarProps) {
             ))}
           </div>
 
+
+
           {/* User Dropdown */}
           {
             user.success ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="cursor-pointer">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
+                <div className="flex items-center gap-2">
+                  
+
+                  <DropdownMenuTrigger asChild>
+                    <div className="cursor-pointer">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary" />
+                      </div>
                     </div>
-                  </div>
-                </DropdownMenuTrigger>
+                  </DropdownMenuTrigger>
+                  
+                  {/* //ThemeToggle */}
+
+                  <ThemeToggle />
+
+                </div>
+
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col gap-1">
@@ -107,7 +121,10 @@ export function Navbar({ user }: NavbarProps) {
                       </p>
                     </div>
                   </DropdownMenuLabel>
+
+
                   <DropdownMenuSeparator />
+
                   {userMenuItems.map((item) => {
                     const Icon = item.icon;
                     return (
@@ -120,7 +137,10 @@ export function Navbar({ user }: NavbarProps) {
                       </DropdownMenuItem>
                     );
                   })}
+
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuItem onClick={async () => {
                     await handleUserMenuAction("logout");
                   }}>
@@ -141,10 +161,13 @@ export function Navbar({ user }: NavbarProps) {
                     Login
                   </Button>
                 </Link>
+
               </div>
             )
           }
         </div>
+
+
       </div>
     </nav>
   );
