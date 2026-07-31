@@ -12,7 +12,7 @@ export type IPaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
 
 
 // ---------- User ----------
-type IUser = {
+export type IUser = {
   success: boolean;
   message: string;
   data: {
@@ -169,4 +169,31 @@ export interface IPayment {
             rentPrice: string;
         };
     };
+}
+
+
+
+
+// ---------- User Data (plain object, used in lists/rows like Admin > Users) ----------
+export interface IUserData {
+  id: string;
+  name: string;
+  email: string;
+  role: IRole;
+  phone: string | null;
+  photo: string | null;
+  activeStatus: IActiveStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+export interface IReview {
+    id: string;
+    propertyId: string;
+    tenantId: string;
+    requestId: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
 }

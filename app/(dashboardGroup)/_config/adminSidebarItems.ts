@@ -9,12 +9,12 @@ export const ADMIN_SIDEBAR_ITEMS: ISidebarItem[] = [
   },
   {
     label: "Users",
-    href: "/dashboard/admin/users",
+    href: "/admin-dashboard/users",
     icon: Users,
   },
-  {
+   {
     label: "Properties",
-    href: "/dashboard/admin/properties",
+    href: "/admin-dashboard/properties",
     icon: Building2,
   },
   {

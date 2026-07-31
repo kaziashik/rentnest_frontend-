@@ -24,7 +24,7 @@ export const TENANT_SIDEBAR_ITEMS: ISidebarItem[] = [
   },
   {
     label: "My Reviews",
-    href: "/tenant-dashboard/reviews",
+    href: "/dashboard/reviews",
     icon: Star,
   },
   {
