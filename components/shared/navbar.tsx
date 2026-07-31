@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import { HomeIcon, LayoutDashboard, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -63,9 +63,12 @@ export function Navbar({ user }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="shrink-0">
-            <span className="text-2xl font-bold text-primary">
-              NextJs Press
+          <Link href="/" className="group flex shrink-0 items-center gap-2">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform duration-300 group-hover:scale-105">
+              <HomeIcon className="size-4" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-primary transition-colors duration-300 group-hover:text-primary/80">
+              RentNest
             </span>
           </Link>
 
