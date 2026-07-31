@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { getAccessToken } from "@/service/refreshToken";
 
 type ProfileState = {
     success: boolean;
@@ -11,8 +12,7 @@ type ProfileState = {
 } | null;
 
 export const updateProfile = async (currentRole: string, prevState: ProfileState, formData: FormData) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         return { success: false, message: "User not logged in!" }

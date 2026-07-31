@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { jwtutils } from "./utils/jwt";
 import { cookies } from "next/headers";
-import { getNewrefreshToken } from "./service/refreshToken";
+import { getNewAccessToken } from "./service/refreshToken";
 
 const AUTH_ROUTES = ["/login", "/register"];
 const PUBLIC_ROUTES = ["/","/register"];

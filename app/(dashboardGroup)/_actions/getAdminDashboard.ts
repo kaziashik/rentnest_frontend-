@@ -1,8 +1,8 @@
+import { getAccessToken } from "@/service/refreshToken";
 import { cookies } from "next/headers";
 
 export const getAdminDashboard = async () => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         return {

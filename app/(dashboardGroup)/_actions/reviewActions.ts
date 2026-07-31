@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { getAccessToken } from "@/service/refreshToken";
 
 type ReviewState = {
     success: boolean;
@@ -16,8 +17,7 @@ export const createReview = async (
     prevState: ReviewState,
     formData: FormData
 ) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         return { success: false, message: "User not logged in!" }

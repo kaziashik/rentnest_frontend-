@@ -1,5 +1,6 @@
 "use server";
 
+import { getAccessToken } from "@/service/refreshToken";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -12,8 +13,7 @@ type PropertyState = {
 } | null;
 
 export const updateProperty = async (propertyId: string, prevState: PropertyState, formData: FormData) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         return {

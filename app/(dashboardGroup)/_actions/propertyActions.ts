@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { getAccessToken, getNewAccessToken } from "@/service/refreshToken";
 
 type PropertyState = {
   success: boolean;
@@ -14,8 +15,8 @@ export const createProperty = async (
   prevState: PropertyState,
   formData: FormData,
 ) => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value || null;
+  
+  const accessToken = await getAccessToken();
 
   if (!accessToken) {
     return {
@@ -39,6 +40,8 @@ export const createProperty = async (
     property_image: formData.getAll("property_image") as string[],
   };
 
+   
+
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/properties/landlord`,
     {
@@ -58,6 +61,8 @@ export const createProperty = async (
       expire: 0,
     });
   }
+
+//   console.log("Creat Property",result);
 
   return result;
 };

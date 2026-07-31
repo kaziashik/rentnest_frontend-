@@ -2,10 +2,10 @@
 
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { getAccessToken } from "@/service/refreshToken";
 
 export const updateUserStatus = async (userId: string, activeStatus: "ACTIVE" | "BANNED") => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         return { success: false, message: "User not logged in!" }

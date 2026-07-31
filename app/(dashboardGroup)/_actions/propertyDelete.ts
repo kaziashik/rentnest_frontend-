@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { getAccessToken } from "@/service/refreshToken";
 
 type DeleteState = {
     success: boolean;
@@ -11,8 +12,7 @@ type DeleteState = {
 } | null;
 
 export const deleteProperty = async (propertyId: string) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         return {
