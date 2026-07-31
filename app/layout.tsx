@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { Footer } from "@/components/shared/Footer";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -31,6 +32,8 @@ export default async function RootLayout({
           {children}
 
           {/* Footer */}
+          <Footer></Footer>
+
         </ThemeProvider>
       </body>
     </html>

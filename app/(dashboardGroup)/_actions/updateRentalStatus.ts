@@ -27,6 +27,7 @@ export const updateRentalStatus = async (requestId: string, status: string) => {
 
     if (result.success) {
         revalidateTag("rental-requests", "max");
+          revalidateTag("my-rental-requests", "max");
     }
 
     return result;

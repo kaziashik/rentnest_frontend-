@@ -12,7 +12,7 @@ export default function PaymentSuccessPage() {
             <p className="text-muted-foreground">
                 Your rent payment has been processed successfully.
             </p>
-            <Link href="/tenant-dashboard/payments">
+            <Link href="/tenant-dashboard/payments" prefetch={false}>
                 <Button>View Payment History</Button>
             </Link>
         </div>

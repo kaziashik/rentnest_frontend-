@@ -1,4 +1,6 @@
+
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { TenantPaymentsList } from "../../_components/TenantPaymentsList";
 
 function PaymentsSkeleton() {
@@ -11,7 +13,8 @@ function PaymentsSkeleton() {
     );
 }
 
-export default function TenantPaymentsPage() {
+export default async function TenantPaymentsPage() {
+    await connection();
     return (
         <div className="space-y-6">
             <h1 className="text-2xl font-semibold">Payments</h1>

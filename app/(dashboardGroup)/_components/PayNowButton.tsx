@@ -16,8 +16,6 @@ export function PayNowButton({ requestId }: PayNowButtonProps) {
     const handlePay = () => {
         startTransition(async () => {
             const result = await createCheckoutSession(requestId);
-
-            // if we get here, redirect() didn't fire, meaning it failed
             if (result && !result.success) {
                 toast.error(result.message || "Unable to start checkout");
             }

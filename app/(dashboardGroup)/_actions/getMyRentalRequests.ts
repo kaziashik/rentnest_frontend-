@@ -5,21 +5,14 @@ export const getMyRentalRequests = async () => {
     const accessToken = cookieStore.get("accessToken")?.value || null;
 
     if (!accessToken) {
-        return {
-            success: false,
-            message: "User not logged in!"
-        }
+        return { success: false, message: "User not logged in!" }
     }
 
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/rentals`, {
         headers: {
             Cookie: `accessToken=${accessToken}`
         },
-        cache: "force-cache",
-        next: {
-            revalidate: 60 * 60,
-            tags: ["my-rental-requests"]
-        }
+        cache: "no-store",
     });
 
     const result = await res.json();
