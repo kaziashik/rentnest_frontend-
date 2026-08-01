@@ -1,11 +1,9 @@
 "use server"
 
-import { cookies } from "next/headers";
+import { getAccessToken } from "./refreshToken";
 
 export const getMe = async () => {
-    const cookieStore = await cookies();
-
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+   const accessToken = await getAccessToken();
 // console.log("TOKEN IN GETME:", accessToken);
 
     if(!accessToken){
@@ -26,11 +24,11 @@ export const getMe = async () => {
             Cookie : `accessToken=${accessToken}`
         },
 
-        cache : "force-cache",
-        next : {
-            revalidate : 60 * 60 * 24, // 1day
-            tags : ["my-profile"]
-        }
+        cache: "no-store",
+        // next : {
+        //     revalidate : 60 * 60 * 24, // 1day
+        //     tags : ["my-profile"]
+        // }
     });
 
     const result = await res.json();

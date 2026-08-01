@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/shared/navbar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getMe } from "@/service/getMe";
 import { redirect } from "next/navigation";
 import DashboardSidebar from "./_components/DashboardSidebar";
@@ -32,7 +32,14 @@ const DashboardGroupLayout = async ({
       <SidebarProvider>
         <div className="flex flex-1">
           <DashboardSidebar user={user} />
-          <main className="flex-1 min-w-0">{children}</main>
+          <main className="flex-1 min-w-0">
+            <div className="border-b px-4 py-2 md:hidden">
+              <SidebarTrigger />
+            </div>
+            <div className="p-4 sm:p-6">
+              {children}
+            </div>
+          </main>
         </div>
       </SidebarProvider>
     </div>
