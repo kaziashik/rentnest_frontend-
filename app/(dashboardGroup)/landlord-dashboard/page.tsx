@@ -17,7 +17,7 @@ async function LandlordStats() {
 
   const availableCount = properties.filter((p: any) => p.availability === "AVAILABLE").length;
   const unavailableCount = properties.filter((p: any) => p.availability === "UNAVAILABLE").length;
-  const pendingRequests = requests.filter((r: any) => r.status === "ACTIVE").length;
+  const pendingRequests = requests.filter((r: any) => r.status === "PENDING").length;
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

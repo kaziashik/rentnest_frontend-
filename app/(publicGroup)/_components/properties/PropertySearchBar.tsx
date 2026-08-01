@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SearchIcon, ArrowUpDownIcon, XIcon } from "lucide-react";
+import { ArrowUpDownIcon, XIcon } from "lucide-react";
 
 const sortOptions = [
   { label: "Default", value: "" },
@@ -25,24 +26,57 @@ export function PropertySearchBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const [title, setTitle] = useState(searchParams.get("title") ?? "");
   const [location, setLocation] = useState(searchParams.get("location") ?? "");
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "");
   const [sort, setSort] = useState(searchParams.get("sort") ?? "");
 
-  const applyFilters = () => {
+  const updateURL = (updates: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    location ? params.set("location", location) : params.delete("location");
-    minPrice ? params.set("minPrice", minPrice) : params.delete("minPrice");
-    maxPrice ? params.set("maxPrice", maxPrice) : params.delete("maxPrice");
-    sort ? params.set("sort", sort) : params.delete("sort");
+    Object.entries(updates).forEach(([key, value]) => {
+      value ? params.set(key, value) : params.delete(key);
+    });
+
     params.set("page", "1");
 
     router.push(`${pathname}?${params.toString()}`);
   };
 
+  // Debounced — waits 500ms after the last keystroke before updating the URL
+  const debouncedUpdate = useDebouncedCallback((updates: Record<string, string>) => {
+    updateURL(updates);
+  }, 500);
+
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    debouncedUpdate({ title: value, location, minPrice, maxPrice, sort });
+  };
+
+  const handleLocationChange = (value: string) => {
+    setLocation(value);
+    debouncedUpdate({ title, location: value, minPrice, maxPrice, sort });
+  };
+
+  const handleMinPriceChange = (value: string) => {
+    setMinPrice(value);
+    debouncedUpdate({ title, location, minPrice: value, maxPrice, sort });
+  };
+
+  const handleMaxPriceChange = (value: string) => {
+    setMaxPrice(value);
+    debouncedUpdate({ title, location, minPrice, maxPrice: value, sort });
+  };
+
+  const handleSortChange = (value: string) => {
+    setSort(value);
+    // Sort is a click, not typing — apply immediately, no debounce needed
+    updateURL({ title, location, minPrice, maxPrice, sort: value });
+  };
+
   const clearFilters = () => {
+    setTitle("");
     setLocation("");
     setMinPrice("");
     setMaxPrice("");
@@ -53,18 +87,27 @@ export function PropertySearchBar() {
   const activeSortLabel =
     sortOptions.find((o) => o.value === sort)?.label ?? "Sort";
 
-  const hasActiveFilters = location || minPrice || maxPrice || sort;
+  const hasActiveFilters = title || location || minPrice || maxPrice || sort;
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border bg-card p-4 md:flex-row md:items-end md:gap-4">
+      <div className="flex-1 space-y-1.5">
+        <Label htmlFor="title">Search</Label>
+        <Input
+          id="title"
+          placeholder="Search by property title..."
+          value={title}
+          onChange={(e) => handleTitleChange(e.target.value)}
+        />
+      </div>
+
       <div className="flex-1 space-y-1.5">
         <Label htmlFor="location">Location</Label>
         <Input
           id="location"
           placeholder="e.g. Ipoh, MY"
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && applyFilters()}
+          onChange={(e) => handleLocationChange(e.target.value)}
         />
       </div>
 
@@ -76,8 +119,7 @@ export function PropertySearchBar() {
             type="number"
             placeholder="RM 0"
             value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && applyFilters()}
+            onChange={(e) => handleMinPriceChange(e.target.value)}
           />
         </div>
         <div className="w-28 space-y-1.5">
@@ -87,8 +129,7 @@ export function PropertySearchBar() {
             type="number"
             placeholder="No limit"
             value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && applyFilters()}
+            onChange={(e) => handleMaxPriceChange(e.target.value)}
           />
         </div>
       </div>
@@ -108,7 +149,7 @@ export function PropertySearchBar() {
             {sortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.value}
-                onClick={() => setSort(option.value)}
+                onClick={() => handleSortChange(option.value)}
               >
                 {option.label}
               </DropdownMenuItem>
@@ -117,18 +158,14 @@ export function PropertySearchBar() {
         </DropdownMenu>
       </div>
 
-      <div className="flex gap-2">
-        <Button onClick={applyFilters} className="gap-2">
-          <SearchIcon className="size-4" />
-          Search
-        </Button>
-        {hasActiveFilters && (
+      {hasActiveFilters && (
+        <div className="flex gap-2">
           <Button variant="ghost" onClick={clearFilters} className="gap-2">
             <XIcon className="size-4" />
             Clear
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,15 +11,16 @@ export const getHouseRentalProperties = async ({ query }: { query?: { [key: stri
     params.set("page", (query?.page as string) ?? "1")
     params.set("limit", (query?.limit as string) ?? "6")
 
+    
+
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/properties?${params.toString()}`, {
-        cache: "no-cache",
-        next: {
-            revalidate: 60,
-            tags: ["properties"]
-        }
-    });
+    cache: "no-cache",
+    next: {
+        revalidate : 60 * 60 * 6,
+        tags: ["properties"]
+    }
+});
 
-    const result = await res.json();
-
-    return result;
+const result = await res.json();
+return result;
 }
