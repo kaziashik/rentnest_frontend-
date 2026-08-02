@@ -156,47 +156,43 @@ sequenceDiagram
 
 This is the full site-level flow, showing what each role can do after logging in, and how a rental request moves through its actual status lifecycle.
 
+This is the full site-level flow, showing what each role can do after logging in.
+
 ```mermaid
 flowchart TD
     Start([Start]) --> Open[Open RentNest Website]
-    Open --> Browse[Browse Properties — Public, No Login Needed]
-    Browse --> AuthCheck{Logged In?}
-    AuthCheck -->|No| Auth[Register / Login]
-    Auth --> Role{User Role}
-    AuthCheck -->|Yes| Role
+    Open --> Auth[Register / Login]
+    Auth --> Role{Select User Role}
 
-    Role --> Tenant[Tenant Dashboard]
-    Role --> Landlord[Landlord Dashboard]
-    Role --> Admin[Admin Dashboard]
+    Role --> Tenant[Tenant]
+    Role --> Landlord[Landlord]
+    Role --> Admin[Admin]
 
-    Tenant --> T1[View Property Details]
-    T1 --> T2[Submit Rental Request]
-    T2 --> Pending[Status: PENDING]
+    Tenant --> T1[Browse Listings]
+    T1 --> T2[Search Property]
+    T2 --> T3[View Details]
+    T3 --> T4[Submit Request]
 
-    Landlord --> L1[Create / Edit / Delete Listing]
-    Landlord --> L2[View Incoming Requests]
-    L2 --> Pending
+    Landlord --> L1[Create Listing]
+    L1 --> L2[Edit Listing]
+    L2 --> L3[Delete Listing]
+    L3 --> L4[Receive Request]
 
-    Pending --> Decision{Landlord Decision}
-    Decision -->|Reject| Rejected([Status: REJECTED])
-    Decision -->|Approve| Approved[Status: APPROVED]
+    Admin --> A1[Manage Users]
+    A1 --> A2[Manage Listings]
+    A2 --> A3[Manage Categories]
+    A3 --> A4[Monitor Requests]
 
-    Approved --> PayNow[Tenant: Pay Now Button Appears]
-    PayNow --> Stripe[Stripe Checkout]
-    Stripe --> Success[/success Page]
-    Success --> Active[Status: ACTIVE]
+    T4 --> Decision{Approved?}
+    L4 --> Decision
 
-    Active --> WriteReview[Tenant: Leave Review Button Appears]
-    WriteReview --> Review[Submit Rating + Comment]
-    Review --> Completed([Status: COMPLETED])
-
-    Admin --> A1[Manage Users — Ban / Unban / Delete]
-    Admin --> A2[Manage Categories — Create / Edit / Delete]
-    Admin --> A3[Moderate All Properties]
-    Admin --> A4[Moderate All Rental Requests]
-
-    Completed --> End([End])
-    Rejected --> End
+    Decision -->|No| End1([Request Ends])
+    Decision -->|Yes| Pay[Payment]
+    Pay --> Gateway[Stripe / SSLCommerz]
+    Gateway --> Success[Payment Successful]
+    Success --> Confirmed[Rental Confirmed]
+    Confirmed --> Review[Leave Review]
+    Review --> End2([End])
 ```
 
 [⬆ Back to top](#api-integration--rentnest-frontend)
