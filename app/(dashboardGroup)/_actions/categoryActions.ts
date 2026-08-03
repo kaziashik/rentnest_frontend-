@@ -2,87 +2,160 @@
 
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { getAccessToken } from "@/service/refreshToken";
+
 
 export const createCategory = async (prevState: any, formData: FormData) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+  try {
+    const accessToken = await getAccessToken()
 
     if (!accessToken) {
-        return { success: false, message: "User not logged in!" }
+      return {
+        success: false,
+        message: "User not logged in!",
+      };
     }
 
     const payload = {
-        name: formData.get("name"),
-    }
+      name: formData.get("name"),
+    };
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/categories`, {
+    const res = await fetch(
+      `${process.env.BACKEND_API_URL}/api/categories`,
+      {
         method: "POST",
         headers: {
-            Cookie: `accessToken=${accessToken}`,
-            "Content-Type": "application/json"
+          Cookie: `accessToken=${accessToken}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
-    });
+        body: JSON.stringify(payload),
+      }
+    );
 
     const result = await res.json();
 
+    if (!res.ok) {
+      return {
+        success: false,
+        message: result.message || "Failed to create category",
+      };
+    }
+
     if (result.success) {
-        revalidateTag("categories", "max");
+      revalidateTag("categories", "max");
     }
 
     return result;
-}
+  } catch (error) {
+    console.error("Create category error:", error);
 
-export const updateCategory = async (categoryId: string, prevState: any, formData: FormData) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while creating category",
+    };
+  }
+};
+
+export const updateCategory = async (
+  categoryId: string,
+  prevState: any,
+  formData: FormData
+) => {
+  try {
+ 
+    const accessToken = await getAccessToken()
 
     if (!accessToken) {
-        return { success: false, message: "User not logged in!" }
+      return {
+        success: false,
+        message: "User not logged in!",
+      };
     }
 
     const payload = {
-        name: formData.get("name"),
-    }
+      name: formData.get("name"),
+    };
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/categories/${categoryId}`, {
+    const res = await fetch(
+      `${process.env.BACKEND_API_URL}/api/categories/${categoryId}`,
+      {
         method: "PUT",
         headers: {
-            Cookie: `accessToken=${accessToken}`,
-            "Content-Type": "application/json"
+          Cookie: `accessToken=${accessToken}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
-    });
+        body: JSON.stringify(payload),
+      }
+    );
 
     const result = await res.json();
 
+    if (!res.ok) {
+      return {
+        success: false,
+        message: result.message || "Failed to update category",
+      };
+    }
+
     if (result.success) {
-        revalidateTag("categories", "max");
+      revalidateTag("categories", "max");
     }
 
     return result;
-}
+  } catch (error) {
+    console.error("Update category error:", error);
+
+    return {
+      success: false,
+      message: "Something went wrong while updating category",
+    };
+  }
+};
 
 export const deleteCategory = async (categoryId: string) => {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value || null;
+  try {
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
-        return { success: false, message: "User not logged in!" }
+      return {
+        success: false,
+        message: "User not logged in!",
+      };
     }
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/categories/${categoryId}`, {
+    const res = await fetch(
+      `${process.env.BACKEND_API_URL}/api/categories/${categoryId}`,
+      {
         method: "DELETE",
         headers: {
-            Cookie: `accessToken=${accessToken}`,
+          Cookie: `accessToken=${accessToken}`,
         },
-    });
+      }
+    );
 
     const result = await res.json();
 
+    if (!res.ok) {
+      return {
+        success: false,
+        message: result.message || "Failed to delete category",
+      };
+    }
+
     if (result.success) {
-        revalidateTag("categories", "max");
+      revalidateTag("categories", "max");
     }
 
     return result;
-}
+  } catch (error) {
+    console.error("Delete category error:", error);
+
+    return {
+      success: false,
+      message: "Something went wrong while deleting category",
+    };
+  }
+};

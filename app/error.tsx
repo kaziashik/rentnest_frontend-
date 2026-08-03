@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { AlertTriangleIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 export default function Error({
   error,
@@ -12,17 +14,43 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    console.error("Application error:", error);
   }, [error]);
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
-      <AlertTriangleIcon className="size-10 text-destructive" />
-      <h2 className="text-xl font-semibold">Something went wrong!</h2>
-      <p className="text-sm text-muted-foreground">
-        We hit an unexpected error loading this page. Please try again.
-      </p>
-      <Button onClick={() => reset()}>Try again</Button>
-    </div>
+    <main
+      role="alert"
+      className="flex min-h-screen flex-col items-center justify-center gap-5 px-6 text-center"
+    >
+      <div className="flex size-16 items-center justify-center rounded-full bg-destructive/10">
+        <AlertTriangleIcon
+          className="size-8 text-destructive"
+          aria-hidden="true"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Something went wrong!
+        </h2>
+
+        <p className="max-w-md text-sm text-muted-foreground">
+          We encountered an unexpected error while loading this page.
+          Please try again or return to the homepage.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-3">
+        <Button onClick={() => reset()}>
+          Try again
+        </Button>
+
+        <Button variant="outline" asChild>
+          <Link href="/">
+            Go Home
+          </Link>
+        </Button>
+      </div>
+    </main>
   );
 }
