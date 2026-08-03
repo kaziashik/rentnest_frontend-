@@ -275,4 +275,12 @@ flowchart TD
 - `ACTIVE` → Green Badge (Shows "Leave Review" button)
 - `COMPLETED` → Gray Badge
 
+---
+
+<div align="right">
+
 [⬆ Back to top](#api-integration--rentnest-frontend)
+
+</div>
+
+---
