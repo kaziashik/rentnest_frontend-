@@ -301,16 +301,7 @@ Full request/response-level mapping of every frontend component to its backend e
 
 ---
 
-## 🔑 Admin Access (Demo)
 
-For grading/testing purposes, a working admin account is provided:
-
-| Field | Value |
-|---|---|
-| Email | `<add-admin-email-here>` |
-| Password | `<add-admin-password-here>` |
-
-> ⚠️ Replace the placeholders above with real demo credentials before submission. Do not reuse these credentials for any real account.
 
 ---
 
