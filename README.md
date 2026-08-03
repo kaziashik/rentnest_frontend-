@@ -1,286 +1,263 @@
-# API Integration — RentNest Frontend
+# 🏠 RentNest — Frontend
 
-This document maps every frontend component/server action to the backend API endpoint it consumes. Use it as a quick reference for what calls what.
+A modern, responsive **Next.js** rental property marketplace. Landlords list and manage properties, tenants browse and rent with secure payments, and admins moderate the whole platform — all through role-based dashboards.
 
-
-
-## Project Overview
-
-RentNest is a modern, responsive **Next.js application** for a rental property marketplace. Landlords can list properties, manage availability, and approve or reject rental requests via an intuitive dashboard. Tenants can browse listings with advanced filtering, submit rental requests, and complete secure payments. Admins oversee the entire platform through a comprehensive moderation dashboard. 
+[![Live Site](https://img.shields.io/badge/Live-rentnest--frontend--theta.vercel.app-4c8bf5)](https://rentnest-frontend-theta.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend-rentnestbackend.vercel.app-6cc644)](https://rentnestbackend.vercel.app)
 
 ---
 
-## Roles & Permissions
+## 📋 Table of Contents
 
-| Role | Description | Frontend UI Expectations |
-|------|-------------|-----------------|
-| **Tenant** | Users looking for rental properties | Public browsing, interactive request forms, payment checkout flow, review submission, protected tenant dashboard. |
-| **Landlord** | Property owners who list rentals | Protected landlord dashboard, property CRUD forms (with image upload UI), request approval/rejection toggles, tenant history views. |
-| **Admin** | Platform moderators | Protected admin dashboard, user management tables (ban/unban actions), global platform statistics, content moderation UI. |
-
-> 💡 **Note**: Users select their role during registration. The UI must dynamically adapt based on the authenticated user's role, and routes must be protected using **Next.js Middleware**.
-
----
-
-## Features & UI/UX 
-
-### Public Features
-- **Responsive Property Grid**: Display properties with optimized images (`next/image`), price, location, and basic amenities.
-- **Advanced Search & Filter**: Sidebar or top-bar filters for location, price range, property type, and amenities with real-time UI updates.
-- **Property Details Page**: Comprehensive view with image gallery, description, landlord info, and a "Request to Rent" call-to-action (CTA).
-- **Loading & Error States**: Skeleton loaders for data fetching and graceful `error.tsx` fallbacks.
-
-### Tenant Features
-- **Auth Flows**: Registration and login forms with validation error messages.
-- **Rental Request Flow**: Interactive form/modal to submit a request. If approved, a clear "Proceed to Payment" CTA.
-- **Payment Integration**: Seamless redirect to **Stripe Checkout** or **SSLCommerz** gateway. Dedicated `/payment/success` and `/payment/cancel` pages with clear UI feedback.
-- **Tenant Dashboard**: View rental request history (with status badges: Pending, Approved, Rejected, Active), payment history table, and a form to leave reviews after completion.
-
-### Landlord Features
-- **Landlord Dashboard**: Overview of total properties, active requests, and earnings.
-- **Property Management**: Forms to create, edit, and remove listings. Include UI for image URL uploads and availability toggles.
-- **Request Management**: A dedicated table/list to view incoming requests with "Approve" and "Reject" action buttons (triggering toast notifications on success).
-
-### Admin Features
-- **Admin Dashboard**: Global overview of platform health (total users, properties, pending requests).
-- **User Management**: Data table of all users with search, pagination, and "Ban/Unban" action buttons.
-- **Content Moderation**: Views to inspect all listings and rental requests across the platform.
+- [Overview](#-overview)
+- [Live Links](#-live-links)
+- [Tech Stack](#-tech-stack)
+- [Roles & Permissions](#-roles--permissions)
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#️-environment-variables)
+- [Routes](#-routes)
+- [API Integration](#-api-integration)
+- [Payment Flow](#-payment-flow)
+- [Admin Access (Demo)](#-admin-access-demo)
+- [Author](#-author)
 
 ---
 
-## Frontend Routes & API Integration
+## 📖 Overview
+
+RentNest is a **frontend-only** Next.js application that consumes a separate backend REST API. It covers the full rental lifecycle:
+
+**Browse → Request → Approve → Pay → Review**, across three roles — **Tenant**, **Landlord**, and **Admin** — with role-based UI rendering and route protection via Next.js Middleware.
 
 ---
 
-## 🏠 Public — Properties & Categories
+## 🔗 Live Links
 
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `PropertyList` (Home page) | `getHouseRentalProperties` | `/api/properties` | GET |
-| `PropertyDetails` | `getPropertyById` | `/api/properties/:propertyId` | GET |
-| `PropertyReviews` | `getPropertyReviews` | `/api/review/:propertyId` | GET |
-| `CreatePropertyForm` (category dropdown) | `getCategories` | `/api/categories` | GET |
-
----
-
-## 🏘️ Landlord — Property Management
-
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `MyPropertiesList` | `getMyProperties` | `/api/properties/landlord` | GET |
-| `CreatePropertyForm` | `createProperty` | `/api/properties/landlord` | POST |
-| `PropertyFormDialog` (edit mode) | `updateProperty` | `/api/properties/landlord/:id` | PUT |
-| `DeletePropertyDialog` | `deleteProperty` | `/api/properties/landlord/:id` | DELETE |
+| Resource | Link |
+|---|---|
+| **Live Frontend** | [rentnest-frontend-theta.vercel.app](https://rentnest-frontend-theta.vercel.app) |
+| **Backend API** | [rentnestbackend.vercel.app](https://rentnestbackend.vercel.app) |
+| **Frontend Repo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
+| **API Integration Doc** | [`API_INTEGRATION.md`](./API_INTEGRATION.md) |
 
 ---
 
-## 📋 Rental Requests
+## 🛠️ Tech Stack
 
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `RequestRentalDialog` (tenant, on property details page) | `createRentalRequest` | `/api/rentals` | POST |
-| `RentalRequestsList` (landlord — all requests on their properties) | `getRentalRequests` | `/api/rentals` | GET |
-| `MyRentalRequestsList` (tenant — their own requests) | `getMyRentalRequests` | `/api/rentals` | GET |
-| `AdminRentalRequestsList` (admin — platform-wide moderation) | `getAllRentalRequests` | `/api/rentals` | GET |
-| `RentalRequestCard` (landlord Accept/Reject buttons) | `updateRentalStatus` | `/api/rentals/:id/status` | PUT |
-
-> Status flow: `PENDING → APPROVED / REJECTED → ACTIVE → COMPLETED`
-> UI badge colors (via `getStatusBadgeClass`): Pending = yellow, Approved = blue, Rejected = red, Active = green, Completed = gray.
+- **Framework:** Next.js (App Router) — Server & Client Components, Server Actions
+- **Auth:** JWT (access + refresh tokens), Next.js Middleware for route protection
+- **Payments:** Stripe Checkout
+- **Image Hosting:** ImgBB (via a server-side proxy API route)
+- **Data Fetching / Caching:** Next.js `fetch` with tag-based `revalidateTag` invalidation
+- **UI Feedback:** Toast notifications, skeleton loaders, `error.tsx` boundaries
 
 ---
 
-## 💳 Payments
+## 👥 Roles & Permissions
 
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `PayNowButton` | `createCheckoutSession` | `/api/pay/create-checkout-session` | POST |
-| `TenantPaymentsList` / `PaymentHistoryTable` | `getPaymentHistory` | `/api/pay` | GET |
-| `/success` page | `confirmPaymentSuccess` (revalidates cache after Stripe redirect) | — (internal cache revalidation only) | — |
-
-> Stripe redirects to `/success` or `/cancel` after checkout, based on `success_url`/`cancel_url` set by the backend.
-
----
-
-## ⭐ Reviews
-
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `WriteReviewDialog` (tenant, shown on `ACTIVE` requests) | `createReview` | `/api/review` | POST |
-| `PropertyReviews` (public property details page) | `getPropertyReviews` | `/api/review/:propertyId` | GET |
-| `MyReviewsPage` (tenant dashboard) | `getTenantReviews` | `/api/review/tenant-reviews` | GET |
-
----
-
-## 🔐 Authentication & Profile
-
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `RegisterForm` | `registerAction` | `/api/users/register` | POST |
-| `LoginForm` | `loginAction` | `/api/auth/login` | POST |
-| `Navbar`, `DashboardGroupLayout`, `PublicGroupLayout` (get current user) | `getMe` | `/api/users/me` | GET |
-| `getAccessToken` (internal, called by nearly every action) | `getNewAccessToken` | `/api/auth/refresh-token` | POST |
-| `ProfileForm` (Tenant / Landlord / Admin — shared component) | `updateProfile` | `/api/users/updateProfile` | PUT |
-| `Navbar` logout menu item | `logout` | `/api/auth/logout` | POST |
-
-> `getAccessToken` is a shared utility: checks if the access token is valid, and silently refreshes it via the refresh token if expired — used internally by nearly all server actions above instead of reading cookies directly.
-
----
-
-## 🛠️ Admin
-
-| Frontend Component | Server Action | Backend Endpoint | Method |
-|---|---|---|---|
-| `AdminDashboardPage` | `getAdminDashboard` | `/api/admin/dashboard` | GET |
-| `UsersList` / `UsersTable` | `getAllUsers` | `/api/admin/allusers` | GET |
-| `UserRow` (Ban / Unban toggle) | `updateUserStatus` | `/api/admin/user/:id/status` | PATCH |
-| `UserRow` (Delete) | `deleteUser` | `/api/admin/user/:id` | DELETE |
-| `CategoriesList` | `getAllCategories` | `/api/categories` | GET |
-| `CategoryFormDialog` (create mode) | `createCategory` | `/api/categories` | POST |
-| `CategoryFormDialog` (edit mode) | `updateCategory` | `/api/categories/:id` | PUT |
-| `DeleteCategoryDialog` | `deleteCategory` | `/api/categories/:id` | DELETE |
-| `AllPropertiesList` (admin — platform-wide, read-only) | `getHouseRentalProperties` (reused public action) | `/api/properties` | GET |
-
----
-
-## 🖼️ Image Uploads (Third-Party — ImgBB)
-
-| Frontend Component | Internal Route | External Service | Method |
-|---|---|---|---|
-| `RegisterForm` (optional profile photo) | `/api/upload-image` (own Next.js API route, proxies to ImgBB) | ImgBB API | POST |
-| `ProfileForm` (update profile photo) | `/api/upload-image` | ImgBB API | POST |
-| `CreatePropertyForm` (multiple property images) | `/api/upload-image` | ImgBB API | POST |
-
-> Images are uploaded directly from the browser to `/api/upload-image`, which securely proxies the request to ImgBB (keeping the API key server-side), then returns a public URL that gets submitted as part of the form data (`property_image`, `photo`).
-
----
-
-## 📌 Notes on Caching Strategy
-
-| Data Type | Strategy | Reasoning |
+| Role | Description | UI Access |
 |---|---|---|
-| Properties, categories | `revalidate: 60`, tagged | Changes occasionally; short cache is fine |
-| Rental requests, payment history | `cache: "no-store"` | Must always reflect real-time status (payments, approvals) |
-| User profile (`getMe`) | `cache: "no-store"` | Must always reflect the currently logged-in user, never cached/shared across visitors |
-| Reviews | Tagged (`property-reviews-:id`, `tenant-reviews`) | Revalidated on-demand via `revalidateTag` after a new review is submitted |
+| **Tenant** | Users looking for rentals | Public browsing, request forms, payment checkout, reviews, protected tenant dashboard |
+| **Landlord** | Property owners | Protected dashboard, property CRUD, request approve/reject, tenant history |
+| **Admin** | Platform moderators | Protected dashboard, user ban/unban, platform stats, content moderation |
 
-All mutating actions (`create`/`update`/`delete`) call `revalidateTag(...)` on success to invalidate the relevant cached reads, so the UI reflects changes without requiring a manual refresh.
+> Role is selected at registration. The UI adapts dynamically based on the authenticated user's role, and protected routes are enforced by **Next.js Middleware**.
 
 ---
 
-## 📊 Flow Diagrams
+## ✨ Features
 
-### 📜 Sequence Diagram
+### Public
+- Responsive property grid with optimized images (`next/image`)
+- Search & filter by location, price range, property type, amenities
+- Property details page — gallery, description, landlord info, reviews, "Request to Rent" CTA
+- Skeleton loaders + graceful `error.tsx` fallbacks
 
-This shows the same flow as a timeline of messages between the tenant, the platform, the landlord, the payment gateway, and the admin.
+### Tenant
+- Registration / login with inline validation errors
+- Submit rental requests; track status (`Pending` → `Approved`/`Rejected` → `Active` → `Completed`)
+- Stripe Checkout payment flow with `/success` and `/cancel` pages
+- Dashboard: request history, payment history, leave reviews on active/completed rentals
 
-```mermaid
-sequenceDiagram
-    participant T as Tenant
-    participant R as RentNest
-    participant L as Landlord
-    participant S as Stripe
-    participant A as Admin
+### Landlord
+- Dashboard overview: total properties, active requests, earnings
+- Full property CRUD with image uploads and availability toggle
+- Incoming request management with Approve/Reject actions + toast feedback
 
-    T->>R: Browse properties (public, no login required)
-    T->>R: View property details + reviews
-    T->>R: Register / Login
-    T->>L: Submit rental request (PENDING)
-    L->>R: Review request (tenant profile, message, move-in date)
-    L->>T: Approve request (status → APPROVED)
-    T->>S: Pay Now → create checkout session
-    S->>T: Payment successful → redirect to /success
-    R->>R: Revalidate cache (payment history, rental requests)
-    Note over T,L: Rental status becomes ACTIVE
-    T->>R: Leave review (rating + comment)
-    R->>A: Admin monitors all users, properties, and requests
-    A->>R: Ban/unban users, manage categories
+### Admin
+- Platform-wide dashboard (users, properties, pending requests)
+- User management table — search, paginate, ban/unban, delete
+- Category management (create/edit/delete)
+- View all properties and rental requests across the platform
+
+---
+
+## 📁 Project Structure
+
+```
+rentnest_frontend-/
+├── app/
+│   ├── (public)/               # Home, property listing & details, about, contact
+│   ├── (auth)/                 # /login, /register
+│   ├── dashboard/
+│   │   ├── tenant/             # Tenant dashboard, requests, payments, reviews
+│   │   ├── landlord/           # Landlord dashboard, property management, requests
+│   │   └── admin/              # Admin dashboard, users, categories, moderation
+│   ├── payment/
+│   │   ├── success/
+│   │   └── cancel/
+│   ├── api/
+│   │   └── upload-image/       # Server-side proxy to ImgBB
+│   ├── actions/                # Server Actions (one per backend resource)
+│   └── middleware.ts           # Role-based route protection
+├── components/                 # Shared UI components
+├── lib/                        # getAccessToken, api client, utils
+├── .env.example
+├── API_INTEGRATION.md
+└── README.md
 ```
 
-[⬆ Back to top](#api-integration--rentnest-frontend)
+> Adjust this tree to match your actual folder layout if it differs.
 
 ---
 
-### 🌐 Website Flowchart
+## 🚀 Getting Started
 
-This is the full site-level flow, showing what each role can do after logging in, and how a rental request moves through its actual status lifecycle.
+### Prerequisites
+- Node.js 18+
+- npm (or pnpm/yarn)
+- A running instance of the [backend API](https://rentnestbackend.vercel.app) (local or deployed)
 
-This is the full site-level flow, showing what each role can do after logging in.
+### Installation
 
-```mermaid
-flowchart TD
-    Start([Start]) --> Open[Open RentNest Website]
-    Open --> Auth[Register / Login]
-    Auth --> Role{Select User Role}
-
-    Role --> Tenant[Tenant]
-    Role --> Landlord[Landlord]
-    Role --> Admin[Admin]
-
-    Tenant --> T1[Browse Listings]
-    T1 --> T2[Search Property]
-    T2 --> T3[View Details]
-    T3 --> T4[Submit Request]
-
-    Landlord --> L1[Create Listing]
-    L1 --> L2[Edit Listing]
-    L2 --> L3[Delete Listing]
-    L3 --> L4[Receive Request]
-
-    Admin --> A1[Manage Users]
-    A1 --> A2[Manage Listings]
-    A2 --> A3[Manage Categories]
-    A3 --> A4[Monitor Requests]
-
-    T4 --> Decision{Approved?}
-    L4 --> Decision
-
-    Decision -->|No| End1([Request Ends])
-    Decision -->|Yes| Pay[Payment]
-    Pay --> Gateway[Stripe / SSLCommerz]
-    Gateway --> Success[Payment Successful]
-    Success --> Confirmed[Rental Confirmed]
-    Confirmed --> Review[Leave Review]
-    Review --> End2([End])
+```bash
+git clone https://github.com/kaziashik/rentnest_frontend-.git
+cd rentnest_frontend-
+npm install
 ```
 
+### Configure environment variables
 
+```bash
+cp .env.example .env.local
+```
 
-### 🏠 Tenant Journey
-```text
-[Register/Login] → [Browse Properties] → [View Details] 
-       ↓
-[Submit Request Form (Validation)] → [Wait for Approval UI]
-       ↓
-[Approved: "Pay Now" CTA] → [Stripe/SSLCommerz Redirect]
-       ↓
-[Payment Success Page] → [Leave Review Form]
+Fill in the values in `.env.local` (see [Environment Variables](#️-environment-variables) below).
 
+### Run the dev server
 
-### 🏘️ Landlord Journey
-```text
-[Register/Login] → [Dashboard Overview] → [Create Listing Form]
-       ↓
-[View Incoming Requests Table] → [Click Approve/Reject]
-       ↓
-[Toast Notification: "Request Approved"] → [Tenant can now pay]
+```bash
+npm run dev
+```
 
-### 🏘️ Admin Journey
+Visit **http://localhost:3000**.
 
+### Build for production
 
-
-### 📊 Rental Request Status (UI Badges)
-- `PENDING` → Yellow/Orange Badge
-- `APPROVED` → Blue Badge (Shows "Pay Now" button)
-- `REJECTED` → Red Badge
-- `ACTIVE` → Green Badge (Shows "Leave Review" button)
-- `COMPLETED` → Gray Badge
+```bash
+npm run build
+npm start
+```
 
 ---
 
-<div align="right">
+## ⚙️ Environment Variables
 
-[⬆ Back to top](#api-integration--rentnest-frontend)
+Create a `.env.local` file in the project root with the following keys. **No values are provided here** — obtain real secrets from the project owner or your own service dashboards (ImgBB, JWT secret generator, etc.). Never commit `.env.local`.
 
-</div>
+| Variable | Scope | Used For |
+|---|---|---|
+| `BACKEND_API_URL` | Server only | Base URL server actions/server components use to reach the backend API (kept server-side, never shipped to the browser bundle) |
+| `NEXT_PUBLIC_BACKEND_API_URL` | Client + Server | Same backend base URL, exposed to client components that fetch the API directly |
+| `JWT_ACCESS_SECRET` | Server only | Signs/verifies short-lived access tokens |
+| `JWT_REFRESH_SECRET` | Server only | Signs/verifies long-lived refresh tokens, used by the silent-refresh flow in `getAccessToken` |
+| `IMGBB_API_KEY` | Server only | Server-side key for the `/api/upload-image` proxy route, keeping the key out of the client bundle |
+
+**`.env.example`** (commit this one, with no real values):
+
+```dotenv
+# Server-only
+BACKEND_API_URL=
+
+# Client + Server (must be prefixed NEXT_PUBLIC_ to be exposed to the browser)
+NEXT_PUBLIC_BACKEND_API_URL=
+
+# Auth
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+
+# Image uploads
+IMGBB_API_KEY=
+```
+
+> 💡 Swap `BACKEND_API_URL` / `NEXT_PUBLIC_BACKEND_API_URL` between your local backend (`http://localhost:5000`) and the deployed backend (`https://rentnestbackend.vercel.app`) depending on what you're testing against.
 
 ---
+
+## 🗺️ Routes
+
+| Route | Description | Access |
+|---|---|---|
+| `/` | Home — featured properties | Public |
+| `/properties` | Browse & filter properties | Public |
+| `/propertiesDetails/[id]` | Property details, gallery, reviews, request CTA | Public |
+| `/register` | Registration (role selection) | Public |
+| `/login` | Login | Public |
+| `/dashboard/tenant` | Tenant overview, request history | Tenant only |
+| `/dashboard/tenant/requests/[id]/pay` | Payment initiation | Tenant only |
+| `/payment/success` | Payment success feedback | Tenant only |
+| `/payment/cancel` | Payment cancelled feedback | Tenant only |
+| `/dashboard/landlord` | Landlord overview & property list | Landlord only |
+| `/dashboard/landlord/properties/new` | Create property | Landlord only |
+| `/dashboard/landlord/requests` | Manage incoming requests | Landlord only |
+| `/dashboard/admin` | Admin overview, users, moderation | Admin only |
+
+---
+
+## 🔌 API Integration
+
+Full request/response-level mapping of every frontend component to its backend endpoint lives in [`API_INTEGRATION.md`](./API_INTEGRATION.md), including:
+
+- Public property/category endpoints
+- Landlord property CRUD
+- Rental request lifecycle
+- Payments (Stripe Checkout)
+- Reviews
+- Auth & profile
+- Admin user/category management
+- Image upload proxy
+- Caching & revalidation strategy
+
+---
+
+## 💳 Payment Flow
+
+1. Tenant's rental request is **Approved** by the landlord.
+2. Tenant clicks **Pay Now** → frontend calls the backend to create a Stripe Checkout session.
+3. Tenant is redirected to Stripe Checkout to complete payment.
+4. Stripe redirects back to `/payment/success` or `/payment/cancel` based on outcome.
+5. On success, the frontend revalidates payment history and rental request caches — status moves to **Active**.
+
+> Only real Stripe Checkout is used — no simulated/fake "Cash on Delivery" or "Pay Later" flows.
+
+---
+
+## 🔑 Admin Access (Demo)
+
+For grading/testing purposes, a working admin account is provided:
+
+| Field | Value |
+|---|---|
+| Email | `<add-admin-email-here>` |
+| Password | `<add-admin-password-here>` |
+
+> ⚠️ Replace the placeholders above with real demo credentials before submission. Do not reuse these credentials for any real account.
+
+---
+
+## 👤 Author
+
+**Kazi Ashik**
+© 2026 RentNest. Built by Kazi Ashik.
