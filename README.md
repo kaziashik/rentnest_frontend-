@@ -97,29 +97,85 @@ RentNest is a **frontend-only** Next.js application that consumes a separate bac
 ## 📁 Project Structure
 
 ```
-rentnest_frontend-/
+rentnest/
 ├── app/
-│   ├── (public)/               # Home, property listing & details, about, contact
-│   ├── (auth)/                 # /login, /register
-│   ├── dashboard/
-│   │   ├── tenant/             # Tenant dashboard, requests, payments, reviews
-│   │   ├── landlord/           # Landlord dashboard, property management, requests
-│   │   └── admin/              # Admin dashboard, users, categories, moderation
-│   ├── payment/
-│   │   ├── success/
-│   │   └── cancel/
+│   ├── (authGroup)/               # Route group — auth pages (no shared URL segment)
+│   │   ├── _actions/
+│   │   │   └── authAction.ts      # login / register server actions
+│   │   ├── _components/
+│   │   ├── login/
+│   │   └── register/
+│   │
+│   ├── (dashboardGroup)/          # Route group — all protected dashboards
+│   │   ├── _actions/
+│   │   ├── _components/
+│   │   ├── _config/                # nav config, role-based menu items, etc.
+│   │   ├── admin-dashboard/
+│   │   ├── dashboard/               # shared dashboard shell/layout logic
+│   │   ├── landlord-dashboard/
+│   │   ├── tenant-dashboard/
+│   │   └── layout.tsx               # wraps all dashboard routes (auth/role guarded)
+│   │
+│   ├── (publicGroup)/             # Route group — public-facing pages
+│   │   ├── _actions/
+│   │   ├── _components/
+│   │   ├── about/
+│   │   ├── cancel/                  # Stripe cancel redirect
+│   │   ├── contact/
+│   │   ├── propertiesDetails/       # /propertiesDetails/[id]
+│   │   ├── services/
+│   │   ├── success/                 # Stripe success redirect
+│   │   ├── layout.tsx
+│   │   └── page.tsx                 # Home page
+│   │
 │   ├── api/
-│   │   └── upload-image/       # Server-side proxy to ImgBB
-│   ├── actions/                # Server Actions (one per backend resource)
-│   └── middleware.ts           # Role-based route protection
-├── components/                 # Shared UI components
-├── lib/                        # getAccessToken, api client, utils
-├── .env.example
+│   │   └── upload-image/
+│   │       └── route.ts           # Server-side proxy → ImgBB (keeps API key server-side)
+│   │
+│   ├── error.tsx                  # Global error boundary
+│   ├── loading.tsx                 # Global loading UI / skeleton
+│   ├── not-found.tsx               # Global 404 page
+│   ├── globals.css
+│   ├── layout.tsx                  # Root layout
+│   └── favicon.ico
+│
+├── components/
+│   ├── shared/
+│   │   ├── Footer.tsx
+│   │   ├── navbar.tsx
+│   │   ├── theme-provider.tsx
+│   │   └── ThemeToggle.tsx
+│   └── ui/                        # shadcn/ui primitives
+│
+├── hooks/
+│   └── use-mobile.ts
+│
+├── lib/
+│   ├── statusBadge.ts              # rental status → badge color/label mapping
+│   ├── types.ts
+│   └── utils.ts
+│
+├── service/                       # Shared auth/session service calls
+│   ├── getMe.ts
+│   ├── logout.ts
+│   └── refreshToken.ts
+│
+├── utils/
+│   └── jwt.ts                     # JWT sign/verify helpers
+│
+├── public/
+├── .env                           # local secrets (gitignored)
+├── .gitignore
+├── components.json                # shadcn/ui config
+├── AGENTS.md
+├── CLAUDE.md
 ├── API_INTEGRATION.md
 └── README.md
 ```
 
-> Adjust this tree to match your actual folder layout if it differs.
+> `.next/`, `.vercel/`, and `node_modules/` are build/dependency artifacts and are omitted above.
+>
+> Routes are organized into three **Next.js route groups** — `(authGroup)`, `(dashboardGroup)`, `(publicGroup)` — which let related pages share a layout without adding a segment to the URL. Middleware enforces role-based access on top of this at the `(dashboardGroup)` level.
 
 ---
 
@@ -196,23 +252,26 @@ IMGBB_API_KEY=
 
 ---
 
-## 🗺️ Routes
+## 🗺️ Frontend Routes & API Integration
 
-| Route | Description | Access |
+| Next.js Route | Component/Feature | Backend API Consumption |
 |---|---|---|
-| `/` | Home — featured properties | Public |
-| `/properties` | Browse & filter properties | Public |
-| `/propertiesDetails/[id]` | Property details, gallery, reviews, request CTA | Public |
-| `/register` | Registration (role selection) | Public |
-| `/login` | Login | Public |
-| `/dashboard/tenant` | Tenant overview, request history | Tenant only |
-| `/dashboard/tenant/requests/[id]/pay` | Payment initiation | Tenant only |
-| `/payment/success` | Payment success feedback | Tenant only |
-| `/payment/cancel` | Payment cancelled feedback | Tenant only |
-| `/dashboard/landlord` | Landlord overview & property list | Landlord only |
-| `/dashboard/landlord/properties/new` | Create property | Landlord only |
-| `/dashboard/landlord/requests` | Manage incoming requests | Landlord only |
-| `/dashboard/admin` | Admin overview, users, moderation | Admin only |
+| `/` | Home page with featured properties | `GET /api/properties` |
+| `/properties` | Browse & filter properties | `GET /api/properties`, `GET /api/categories` |
+| `/propertiesDetails/[id]` | Property details, gallery, reviews & request CTA | `GET /api/properties/:propertyId`, `GET /api/review/:propertyId` |
+| `/register` | Role selection & registration form | `POST /api/users/register` |
+| `/login` | Login form | `POST /api/auth/login` |
+| `/dashboard/tenant` | Tenant overview & request history | `GET /api/rentals`, `GET /api/pay` |
+| `/dashboard/tenant/requests/[id]/pay` | Payment initiation page | `POST /api/pay/create-checkout-session` |
+| `/payment/success` & `/payment/cancel` | Payment outcome pages | *(Revalidates cache based on Stripe redirect)* |
+| `/dashboard/landlord` | Landlord overview & property list | `GET /api/properties/landlord` |
+| `/dashboard/landlord/properties/new` | Create property form | `POST /api/properties/landlord` |
+| `/dashboard/landlord/requests` | Manage incoming requests | `GET /api/rentals`, `PUT /api/rentals/:id/status` |
+| `/dashboard/admin` | Admin overview & user management | `GET /api/admin/dashboard`, `GET /api/admin/allusers`, `PATCH /api/admin/user/:id/status` |
+
+> Access: everything above `/dashboard/tenant` is public. Everything under `/dashboard/*` is protected via **Next.js Middleware** and scoped to the matching role (tenant / landlord / admin).
+
+Full component-level and per-action breakdown (including reviews, image uploads, and caching strategy) lives in [`API_INTEGRATION.md`](./API_INTEGRATION.md).
 
 ---
 
