@@ -32,7 +32,6 @@ RentNest is a **frontend-only** Next.js application that consumes a separate bac
 **Browse → Request → Approve → Pay → Review**, across three roles — **Tenant**, **Landlord**, and **Admin** — with role-based UI rendering and route protection via Next.js Middleware.
 
 ---
-
 ## 🔗 Live Links
 
 | Resource | Link |
@@ -40,9 +39,8 @@ RentNest is a **frontend-only** Next.js application that consumes a separate bac
 | **Live Frontend** | [rentnest-frontend-theta.vercel.app](https://rentnest-frontend-theta.vercel.app) |
 | **Backend API** | [rentnestbackend.vercel.app](https://rentnestbackend.vercel.app) |
 | **Frontend Repo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
+| **Backend Repo** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **API Integration Doc** | [`API_INTEGRATION.md`](./API_INTEGRATION.md) |
-
----
 
 ## 🛠️ Tech Stack
 
