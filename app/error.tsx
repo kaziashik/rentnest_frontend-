@@ -1,7 +1,8 @@
-"use client"; // Error boundaries must be Client Components
+"use client";
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { AlertTriangleIcon } from "lucide-react";
 
 export default function Error({
   error,
@@ -11,15 +12,15 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
+      <AlertTriangleIcon className="size-10 text-destructive" />
       <h2 className="text-xl font-semibold">Something went wrong!</h2>
       <p className="text-sm text-muted-foreground">
-        {error.message || "An unexpected error occurred."}
+        We hit an unexpected error loading this page. Please try again.
       </p>
       <Button onClick={() => reset()}>Try again</Button>
     </div>
