@@ -4,13 +4,41 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   images: {
     remotePatterns: [
-      { hostname: "static.vecteezy.com" },
-      { hostname: "example.com" },
-      { hostname: "i.ibb.co" },
-      { hostname: "i.ibb.co.com" },
-      { hostname: "images.unsplash.com" },
-      { hostname: "plus.unsplash.com" },
-      { hostname: "api.dicebear.com" },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "static.vecteezy.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com",
+        pathname: "/**",
+      },
     ],
   },
 };

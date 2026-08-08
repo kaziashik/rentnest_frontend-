@@ -17,23 +17,47 @@ type LoginState = {
 export const loginAction = async (
   redirectTo : string, prevState : LoginState , formData: FormData
 ) => {
-  const email = formData.get("email");
-  const password = formData.get("password");
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+
+  if (!email || !password) {
+    return {
+      success: false,
+      message: "Email and password are required.",
+    };
+  }
+
+  const baseUrl = process.env.BACKEND_API_URL?.replace(/\/$/, "");
+  if (!baseUrl) {
+    return {
+      success: false,
+      message: "BACKEND_API_URL is not configured.",
+    };
+  }
 
   const payload = {
     email,
     password,
   };
 
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  let result: any;
+  try {
+    const res = await fetch(`${baseUrl}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  const result = await res.json();
+    result = await res.json();
+  } catch {
+    return {
+      success: false,
+      message: `Cannot reach RentNest API at ${baseUrl}. Check BACKEND_API_URL.`,
+    };
+  }
+
   if (result.success) {
     const cookieStore = await cookies();
     cookieStore.set("accessToken", result.data.accessToken, {

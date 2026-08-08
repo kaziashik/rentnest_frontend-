@@ -9,19 +9,19 @@ import { ArrowRightIcon, SearchIcon } from "lucide-react";
 const slides = [
   {
     image:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     title: "Homes that feel like yours",
     subtitle: "Browse verified rentals across Malaysia and move in with confidence.",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d936bb?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     title: "List once. Reach real tenants.",
     subtitle: "Landlords manage requests, approvals, and payouts from one dashboard.",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     title: "Request. Approve. Pay securely.",
     subtitle: "Stripe Checkout keeps rent payments transparent for both sides.",
   },
@@ -49,6 +49,7 @@ export function HeroSection() {
           fill
           priority={i === 0}
           sizes="100vw"
+          unoptimized
           className={`object-cover transition-opacity duration-1000 ${
             i === index ? "opacity-100" : "opacity-0"
           }`}

@@ -1,12 +1,7 @@
-
 import { IProperty } from "@/lib/types";
 import { getHouseRentalProperties } from "../../_actions/getHouseRentalNews";
 import { PropertyCard } from "./propertyCard";
 import { PropertyPagination } from "./propertyPagination";
-
-
-
-
 
 export async function PropertyList({
   searchParams,
@@ -15,10 +10,19 @@ export async function PropertyList({
 }) {
   const query = await searchParams;
   const result = await getHouseRentalProperties({ query });
-  // console.log("get House", result.data.data?.length);
-  // console.log(!result.success || !result.data.data?.length);
 
-  if (!result.success || !result.data.data?.length) {
+  if (!result.success) {
+    return (
+      <div className="space-y-2 rounded-2xl border border-destructive/30 bg-destructive/5 px-6 py-10 text-center">
+        <p className="font-medium text-destructive">Unable to load properties</p>
+        <p className="text-sm text-muted-foreground">
+          {result.message || "Check BACKEND_API_URL and restart the Next.js server."}
+        </p>
+      </div>
+    );
+  }
+
+  if (!result.data?.data?.length) {
     return (
       <p className="py-12 text-center text-muted-foreground">
         No rental properties found.
@@ -33,7 +37,7 @@ export async function PropertyList({
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
-       <PropertyPagination meta={result.data.meta} />
+      <PropertyPagination meta={result.data.meta} />
     </div>
   );
 }
