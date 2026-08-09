@@ -17,9 +17,16 @@ const fraunces = Fraunces({
 });
 
 export const metadata = {
-  title: "RentNest — Find Your Next Home",
+  title: {
+    default: "RentNest",
+    template: "%s | RentNest",
+  },
   description:
     "Malaysia's rental marketplace for tenants and landlords. Browse verified listings, request to rent, and pay securely with Stripe.",
+  applicationName: "RentNest",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default async function RootLayout({
