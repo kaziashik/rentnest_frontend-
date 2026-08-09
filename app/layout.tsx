@@ -25,7 +25,13 @@ export const metadata = {
     "Malaysia's rental marketplace for tenants and landlords. Browse verified listings, request to rent, and pay securely with Stripe.",
   applicationName: "RentNest",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.ico?v=3", sizes: "any" },
+      { url: "/favicon-32x32.png?v=3", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png?v=3", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png?v=3", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/favicon.ico?v=3"],
   },
 };
 
