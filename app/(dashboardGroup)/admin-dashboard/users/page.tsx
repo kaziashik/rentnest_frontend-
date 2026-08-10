@@ -4,12 +4,11 @@ import { UsersSkeleton } from "../../_components/UsersSkeleton";
 
 export default function AdminUsersPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">Users</h1>
-        <p className="text-sm text-muted-foreground">
-          Manage tenants and landlords on the platform.
-        </p>
+        <h1 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+          Users
+        </h1>
       </div>
 
       <Suspense fallback={<UsersSkeleton />}>

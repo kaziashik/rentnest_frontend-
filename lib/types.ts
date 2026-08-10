@@ -195,6 +195,10 @@ export interface IUserData {
   activeStatus: IActiveStatus;
   createdAt: string;
   updatedAt: string;
+  _count?: {
+    properties: number;
+    rentalRequest: number;
+  };
 }
 
 

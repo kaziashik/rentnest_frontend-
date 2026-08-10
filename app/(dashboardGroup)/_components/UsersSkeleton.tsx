@@ -1,9 +1,9 @@
 export function UsersSkeleton() {
   return (
     <div className="space-y-3">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="h-20 animate-pulse rounded-lg bg-muted" />
-      ))}
+      <div className="h-12 animate-pulse rounded-xl bg-muted" />
+      <div className="h-10 animate-pulse rounded-full bg-muted" />
+      <div className="h-72 animate-pulse rounded-xl bg-muted" />
     </div>
   );
 }
