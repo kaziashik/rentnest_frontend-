@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { BanIcon, CheckCircleIcon, Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { deleteUser, updateUserStatus } from "../_actions/userActions";
@@ -55,23 +56,33 @@ function activityLabel(user: IUserData) {
 }
 
 export function UserRow({ user, layout = "card" }: UserRowProps) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [statusOpen, setStatusOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const isBanned = user.activeStatus === "BANNED";
   const isAdmin = user.role === "ADMIN";
 
-  const handleToggleStatus = () => {
+  const handleConfirmStatus = () => {
     if (isAdmin) {
       toast.error("Admin accounts cannot be banned.");
       return;
     }
 
+    const nextStatus = isBanned ? "ACTIVE" : "BANNED";
+
     startTransition(async () => {
-      const result = await updateUserStatus(user.id, isBanned ? "ACTIVE" : "BANNED");
+      const result = await updateUserStatus(user.id, nextStatus);
 
       if (result.success) {
-        toast.success(result.message || "User status updated successfully.");
+        toast.success(
+          nextStatus === "BANNED"
+            ? `${user.name} has been banned.`
+            : `${user.name} has been unbanned.`,
+        );
+        setStatusOpen(false);
+        router.refresh();
       } else {
         toast.error(result.message || "Something went wrong");
       }
@@ -90,6 +101,7 @@ export function UserRow({ user, layout = "card" }: UserRowProps) {
       if (result.success) {
         toast.success(result.message || "User deleted successfully.");
         setDeleteOpen(false);
+        router.refresh();
       } else {
         toast.error(result.message || "Something went wrong");
       }
@@ -98,30 +110,57 @@ export function UserRow({ user, layout = "card" }: UserRowProps) {
 
   const actions = (
     <div className="flex justify-end gap-2">
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={isPending || isAdmin}
-        onClick={handleToggleStatus}
-        title={isAdmin ? "Admin accounts cannot be banned" : undefined}
-        className={
-          isBanned
-            ? "border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700"
-            : "border-yellow-500 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700"
-        }
-      >
-        {isBanned ? (
-          <>
-            <CheckCircleIcon data-icon="inline-start" />
-            Unban
-          </>
-        ) : (
-          <>
-            <BanIcon data-icon="inline-start" />
-            Ban
-          </>
-        )}
-      </Button>
+      <AlertDialog open={statusOpen} onOpenChange={setStatusOpen}>
+        <AlertDialogTrigger asChild>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isPending || isAdmin}
+            title={isAdmin ? "Admin accounts cannot be banned" : undefined}
+            className={
+              isBanned
+                ? "border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700"
+                : "border-yellow-500 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700"
+            }
+          >
+            {isBanned ? (
+              <>
+                <CheckCircleIcon data-icon="inline-start" />
+                Unban
+              </>
+            ) : (
+              <>
+                <BanIcon data-icon="inline-start" />
+                Ban
+              </>
+            )}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {isBanned ? "Unban this user?" : "Ban this user?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {isBanned
+                ? `Are you sure you want to unban ${user.name}? They will be able to sign in and use the platform again.`
+                : `Are you sure you want to ban ${user.name}? They will no longer be able to sign in or use the platform.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmStatus} disabled={isPending}>
+              {isPending
+                ? isBanned
+                  ? "Unbanning..."
+                  : "Banning..."
+                : isBanned
+                  ? "Yes, Unban"
+                  : "Yes, Ban"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogTrigger asChild>
