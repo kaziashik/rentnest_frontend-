@@ -33,8 +33,8 @@ export async function PropertyList({
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {result.data.data.map((property: IProperty) => (
-          <PropertyCard key={property.id} property={property} />
+        {result.data.data.map((property: IProperty, index: number) => (
+          <PropertyCard key={property.id} property={property} index={index} />
         ))}
       </div>
       <PropertyPagination meta={result.data.meta} />

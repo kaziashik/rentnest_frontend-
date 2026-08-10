@@ -7,7 +7,7 @@ import { ICategory } from "@/lib/types";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { XIcon } from "lucide-react";
+import { ImageIcon, XIcon } from "lucide-react";
 import { createProperty } from "../_actions/propertyActions";
 
 type CreatePropertyFormProps = {
@@ -74,6 +74,18 @@ export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
         setImageUrls((prev) => prev.filter((_, i) => i !== index));
     };
 
+    /** Card thumbnail = first image in the list */
+    const setAsThumbnail = (index: number) => {
+        if (index === 0) return;
+        setImageUrls((prev) => {
+            const next = [...prev];
+            const [selected] = next.splice(index, 1);
+            next.unshift(selected);
+            return next;
+        });
+        toast.success("Thumbnail updated — this photo will show on property cards");
+    };
+
     return (
         <form action={formAction} className="max-w-2xl space-y-4">
             <div className="space-y-2">
@@ -126,6 +138,9 @@ export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
 
             <div className="space-y-2">
                 <Label htmlFor="images">Property images</Label>
+                <p className="text-xs text-muted-foreground">
+                    Upload multiple photos, then click <span className="font-medium">Set as thumbnail</span> on the one you want for the property card.
+                </p>
                 <Input
                     id="images"
                     type="file"
@@ -137,28 +152,48 @@ export function CreatePropertyForm({ categories }: CreatePropertyFormProps) {
                 {uploading && <p className="text-xs text-muted-foreground">Uploading...</p>}
 
                 {imageUrls.length > 0 && (
-                    <div className="grid grid-cols-3 gap-2 pt-2 sm:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-3 pt-2 sm:grid-cols-3">
                         {imageUrls.map((url, index) => (
-                            <div key={url} className="relative">
+                            <div
+                                key={`${url}-${index}`}
+                                className={`relative overflow-hidden rounded-xl border-2 ${
+                                    index === 0 ? "border-primary" : "border-transparent"
+                                }`}
+                            >
                                 <img
                                     src={url}
                                     alt={`Property image ${index + 1}`}
-                                    className="h-20 w-full rounded-md object-cover"
+                                    className="h-28 w-full object-cover"
                                 />
+                                {index === 0 ? (
+                                    <span className="absolute top-2 left-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                                        Card thumbnail
+                                    </span>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => setAsThumbnail(index)}
+                                        className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-background/95 px-2 py-1 text-[10px] font-medium shadow-sm hover:bg-background"
+                                    >
+                                        <ImageIcon className="size-3" />
+                                        Set as thumbnail
+                                    </button>
+                                )}
                                 <button
                                     type="button"
                                     onClick={() => removeImage(index)}
-                                    className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-red-500 text-white"
+                                    className="absolute top-2 right-2 flex size-6 items-center justify-center rounded-full bg-red-500 text-white"
+                                    aria-label="Remove image"
                                 >
-                                    <XIcon className="size-3" />
+                                    <XIcon className="size-3.5" />
                                 </button>
                             </div>
                         ))}
                     </div>
                 )}
 
-                {imageUrls.map((url) => (
-                    <input key={url} type="hidden" name="property_image" value={url} />
+                {imageUrls.map((url, index) => (
+                    <input key={`${url}-hidden-${index}`} type="hidden" name="property_image" value={url} />
                 ))}
             </div>
 

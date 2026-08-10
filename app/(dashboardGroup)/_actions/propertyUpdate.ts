@@ -34,9 +34,8 @@ export const updateProperty = async (propertyId: string, prevState: PropertyStat
             .map((f) => f.trim())
             .filter(Boolean),
         availability: formData.get("availability"),
-        property_image: (formData.get("property_image") as string)
-            .split(",")
-            .map((url) => url.trim())
+        property_image: (formData.getAll("property_image") as string[])
+            .flatMap((entry) => entry.split(",").map((url) => url.trim()))
             .filter(Boolean),
     }
 

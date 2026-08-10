@@ -12,20 +12,15 @@ export const getMyProperties = async () => {
         }
     }
 
+    // Always fetch fresh — landlord listings change often; force-cache hid new properties.
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/properties/my-properties`, {
         headers: {
-            Cookie: `accessToken=${accessToken}`
+            Cookie: `accessToken=${accessToken}`,
         },
-
-        cache: "force-cache",
-        next: {
-            revalidate: 60 * 60 * 24, // 1 day
-            tags: ["my-properties"]
-        }
+        cache: "no-store",
     });
 
     const result = await res.json();
-   
 
     return result;
 }

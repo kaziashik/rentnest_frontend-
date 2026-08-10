@@ -84,12 +84,17 @@ export function PropertySearchBar() {
   };
 
   const hasActiveFilters =
-    title || location || minPrice || maxPrice || (category && category !== "all") || (sort && sort !== "newest");
+    title ||
+    location ||
+    minPrice ||
+    maxPrice ||
+    (category && category !== "all") ||
+    (sort && sort !== "newest");
 
   return (
-    <div className="rounded-xl border border-border/80 bg-card/80 p-2.5 shadow-sm backdrop-blur-sm sm:p-3">
-      <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
-        <div className="relative min-w-0 flex-1">
+    <div className="rounded-2xl border border-border/70 bg-muted/25 p-1.5 sm:p-2">
+      <div className="flex flex-col gap-1.5 lg:flex-row lg:items-center lg:gap-1.5">
+        <div className="relative min-w-0 flex-[1.3]">
           <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="title"
@@ -100,7 +105,7 @@ export function PropertySearchBar() {
               setTitle(e.target.value);
               debouncedUpdate(syncPayload({ title: e.target.value }));
             }}
-            className="h-9 pl-8 text-sm"
+            className="h-8 border-0 bg-background shadow-none pl-8 text-sm focus-visible:ring-1"
           />
         </div>
 
@@ -115,7 +120,7 @@ export function PropertySearchBar() {
               setLocation(e.target.value);
               debouncedUpdate(syncPayload({ location: e.target.value }));
             }}
-            className="h-9 pl-8 text-sm"
+            className="h-8 border-0 bg-background shadow-none pl-8 text-sm focus-visible:ring-1"
           />
         </div>
 
@@ -126,7 +131,10 @@ export function PropertySearchBar() {
             updateURL(syncPayload({ category: value }));
           }}
         >
-          <SelectTrigger aria-label="Category" className="h-9 w-full text-sm lg:w-[140px]">
+          <SelectTrigger
+            aria-label="Category"
+            className="h-8 w-full border-0 bg-background shadow-none text-sm focus-visible:ring-1 lg:w-[150px]"
+          >
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -138,32 +146,32 @@ export function PropertySearchBar() {
           </SelectContent>
         </Select>
 
-        <div className="flex gap-2 lg:w-[200px]">
+        <div className="flex gap-1.5 lg:w-[170px]">
           <Input
             id="minPrice"
             aria-label="Min price"
             type="number"
             min={0}
-            placeholder="Min RM"
+            placeholder="Min"
             value={minPrice}
             onChange={(e) => {
               setMinPrice(e.target.value);
               debouncedUpdate(syncPayload({ minPrice: e.target.value }));
             }}
-            className="h-9 text-sm"
+            className="h-8 border-0 bg-background shadow-none text-sm focus-visible:ring-1"
           />
           <Input
             id="maxPrice"
             aria-label="Max price"
             type="number"
             min={0}
-            placeholder="Max RM"
+            placeholder="Max"
             value={maxPrice}
             onChange={(e) => {
               setMaxPrice(e.target.value);
               debouncedUpdate(syncPayload({ maxPrice: e.target.value }));
             }}
-            className="h-9 text-sm"
+            className="h-8 border-0 bg-background shadow-none text-sm focus-visible:ring-1"
           />
         </div>
 
@@ -174,7 +182,10 @@ export function PropertySearchBar() {
             updateURL(syncPayload({ sort: value }));
           }}
         >
-          <SelectTrigger aria-label="Sort" className="h-9 w-full text-sm lg:w-[120px]">
+          <SelectTrigger
+            aria-label="Sort"
+            className="h-8 w-full border-0 bg-background shadow-none text-sm focus-visible:ring-1 lg:w-[110px]"
+          >
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
@@ -192,7 +203,7 @@ export function PropertySearchBar() {
             variant="ghost"
             size="sm"
             onClick={clearFilters}
-            className="h-9 shrink-0 gap-1.5 px-2.5 text-xs text-muted-foreground hover:text-foreground"
+            className="h-8 shrink-0 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
           >
             <XIcon className="size-3.5" />
             Clear
