@@ -1,6 +1,5 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
 import { getAccessToken } from "@/service/refreshToken";
 
@@ -11,7 +10,7 @@ type ProfileState = {
     data?: Record<string, any>;
 } | null;
 
-export const updateProfile = async (currentRole: string, prevState: ProfileState, formData: FormData) => {
+export const updateProfile = async (prevState: ProfileState, formData: FormData) => {
     const accessToken = await getAccessToken();
 
     if (!accessToken) {
@@ -22,7 +21,6 @@ export const updateProfile = async (currentRole: string, prevState: ProfileState
         name: formData.get("name"),
         phone: formData.get("phone"),
         photo: formData.get("photo") || null,
-        role: currentRole,
     }
 
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/updateProfile`, {
