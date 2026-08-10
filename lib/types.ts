@@ -101,7 +101,9 @@ export interface IRentalRequest {
     property: {
         id: string;
         title: string;
+        location?: string;
         rentPrice: string;
+        property_image?: string[] | null;
     };
 }
 
@@ -167,6 +169,7 @@ export interface IPayment {
             title: string;
             location: string;
             rentPrice: string;
+            property_image?: string[] | null;
         };
     };
 }

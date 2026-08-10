@@ -23,9 +23,14 @@ export function PayNowButton({ requestId }: PayNowButtonProps) {
     };
 
     return (
-        <Button size="sm" onClick={handlePay} disabled={isPending}>
+        <Button
+            size="sm"
+            className="h-9 rounded-full px-4"
+            onClick={handlePay}
+            disabled={isPending}
+        >
             <CreditCardIcon data-icon="inline-start" />
-            {isPending ? "Redirecting..." : "Pay Now"}
+            {isPending ? "Redirecting..." : "Pay now"}
         </Button>
     )
 }
