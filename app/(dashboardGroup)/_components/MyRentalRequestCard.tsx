@@ -54,8 +54,7 @@ export function MyRentalRequestCard({
 
   const showReviewButton =
     request.status === "COMPLETED" && !hasReviewed && !justReviewed;
-  const showPayButton =
-    request.status === "APPROVED" && !hasPaid && request.status !== "ACTIVE";
+  const showPayButton = request.status === "APPROVED" && !hasPaid;
   const isActiveRental = request.status === "ACTIVE" || hasPaid;
 
   const cover =
