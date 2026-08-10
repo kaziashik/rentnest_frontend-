@@ -74,6 +74,11 @@ export interface IProperty {
 export interface ICategory {
     id: string;
     name: string;
+    description?: string | null;
+    createdAt?: string;
+    _count?: {
+        properties: number;
+    };
 }
 
 

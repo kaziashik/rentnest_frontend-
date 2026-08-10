@@ -16,8 +16,11 @@ export const createCategory = async (prevState: any, formData: FormData) => {
       };
     }
 
+    const description = String(formData.get("description") ?? "").trim();
+
     const payload = {
       name: formData.get("name"),
+      ...(description ? { description } : { description: null }),
     };
 
     const res = await fetch(
@@ -75,8 +78,11 @@ export const updateCategory = async (
       };
     }
 
+    const description = String(formData.get("description") ?? "").trim();
+
     const payload = {
       name: formData.get("name"),
+      ...(description ? { description } : { description: null }),
     };
 
     const res = await fetch(
