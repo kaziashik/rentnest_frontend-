@@ -12,16 +12,19 @@ import { Loader2 } from "lucide-react";
 const DEMO_ACCOUNTS = [
   {
     role: "Tenant",
+    description: "Browse & request rentals",
     email: process.env.NEXT_PUBLIC_DEMO_TENANT_EMAIL || "tenant@rentnest.com",
     password: process.env.NEXT_PUBLIC_DEMO_TENANT_PASSWORD || "Tenant@123",
   },
   {
     role: "Landlord",
+    description: "List & manage properties",
     email: process.env.NEXT_PUBLIC_DEMO_LANDLORD_EMAIL || "landlord@rentnest.com",
     password: process.env.NEXT_PUBLIC_DEMO_LANDLORD_PASSWORD || "Landlord@123",
   },
   {
     role: "Admin",
+    description: "Oversee users & listings",
     email: process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL || "admin@rentnest.com",
     password: process.env.NEXT_PUBLIC_DEMO_ADMIN_PASSWORD || "Admin@123",
   },
@@ -37,20 +40,15 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [demoPending, setDemoPending] = useState<string | null>(null);
 
   useEffect(() => {
     if (!state) return;
     if (!state.success) {
+      setDemoPending(null);
       toast.error(state.message || "Login failed");
     }
   }, [state]);
-
-  const fillDemo = (demoEmail: string, demoPassword: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    setErrors({});
-    toast.success("Demo credentials filled — click Sign in");
-  };
 
   const validate = () => {
     const next: typeof errors = {};
@@ -65,16 +63,59 @@ const LoginForm = () => {
   const handleSocial = (provider: "google" | "facebook") => {
     toast.message(`${provider === "google" ? "Google" : "Facebook"} sign-in`, {
       description:
-        "Connect your OAuth credentials in the backend to enable social login. Use demo login meanwhile.",
+        "Connect your OAuth credentials in the backend to enable social login. Use quick demo access meanwhile.",
     });
   };
 
   return (
     <div className="space-y-5">
+      <div className="rounded-2xl border border-primary/20 bg-muted/50 p-4">
+        <p className="mb-3 text-center text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+          Quick demo access
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          {DEMO_ACCOUNTS.map((account) => (
+            <form
+              key={account.role}
+              action={action}
+              onSubmit={() => setDemoPending(account.role)}
+            >
+              <input type="hidden" name="email" value={account.email} />
+              <input type="hidden" name="password" value={account.password} />
+              <button
+                type="submit"
+                disabled={pending}
+                className="flex h-full w-full flex-col items-start gap-0.5 rounded-xl border border-primary/25 bg-card px-3 py-3 text-left transition hover:border-primary/50 hover:bg-primary/5 disabled:opacity-60"
+              >
+                <span className="flex items-center gap-1.5 text-sm font-semibold text-primary">
+                  {demoPending === account.role && pending ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : null}
+                  {account.role}
+                </span>
+                <span className="text-[11px] leading-snug text-muted-foreground">
+                  {account.description}
+                </span>
+              </button>
+            </form>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">Or sign in with email</span>
+        </div>
+      </div>
+
       <form
         action={action}
         className="space-y-4"
         onSubmit={(e) => {
+          setDemoPending(null);
           if (!validate()) e.preventDefault();
         }}
       >
@@ -111,7 +152,7 @@ const LoginForm = () => {
         </div>
 
         <Button type="submit" className="w-full rounded-full" disabled={pending}>
-          {pending ? (
+          {pending && !demoPending ? (
             <>
               <Loader2 className="size-4 animate-spin" />
               Signing in...
@@ -144,26 +185,6 @@ const LoginForm = () => {
           </svg>
           Facebook
         </Button>
-      </div>
-
-      <div className="rounded-2xl border bg-muted/40 p-4">
-        <p className="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-          Demo login
-        </p>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          {DEMO_ACCOUNTS.map((account) => (
-            <Button
-              key={account.role}
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="rounded-full"
-              onClick={() => fillDemo(account.email, account.password)}
-            >
-              {account.role}
-            </Button>
-          ))}
-        </div>
       </div>
     </div>
   );
