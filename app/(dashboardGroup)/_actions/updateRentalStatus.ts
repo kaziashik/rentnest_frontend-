@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getAccessToken } from "@/service/refreshToken";
 
 export const updateRentalStatus = async (requestId: string, status: string) => {
@@ -30,6 +30,10 @@ export const updateRentalStatus = async (requestId: string, status: string) => {
         revalidateTag("my-rental-requests", "max");
         revalidateTag("properties", "max");
         revalidateTag("my-properties", "max");
+        revalidatePath("/properties");
+        revalidatePath("/landlord-dashboard/properties");
+        revalidatePath("/landlord-dashboard/properties/requests");
+        revalidatePath("/landlord-dashboard");
     }
 
     return result;
