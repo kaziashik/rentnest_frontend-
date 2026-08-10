@@ -1,38 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { confirmPaymentSuccess } from "../../_actions/confirmPaymentSuccess";
 
-type PaymentSuccessStatusProps = {
-  sessionId: string | null;
-  initialConfirmed: boolean;
-  initialMessage: string;
-};
-
-export function PaymentSuccessStatus({
-  sessionId,
-  initialConfirmed,
-  initialMessage,
-}: PaymentSuccessStatusProps) {
+export function PaymentSuccessStatus() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("session_id");
+
   const [status, setStatus] = useState<"confirming" | "done" | "error">(
-    initialConfirmed ? "done" : sessionId ? "confirming" : "error",
+    "confirming",
   );
-  const [message, setMessage] = useState(initialMessage);
+  const [message, setMessage] = useState(
+    "Confirming payment and updating your rental status...",
+  );
 
   useEffect(() => {
-    if (initialConfirmed || !sessionId) {
-      router.refresh();
-      return;
-    }
-
     let cancelled = false;
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 6;
 
     const runConfirm = async () => {
       if (cancelled) return;
+
+      if (!sessionId) {
+        setStatus("error");
+        setMessage(
+          "Missing Stripe session id. Open Payments and use Pay now again if status is stuck.",
+        );
+        return;
+      }
 
       const result = await confirmPaymentSuccess(sessionId);
       attempts += 1;
@@ -63,7 +61,7 @@ export function PaymentSuccessStatus({
     return () => {
       cancelled = true;
     };
-  }, [initialConfirmed, router, sessionId]);
+  }, [router, sessionId]);
 
   if (status === "done") {
     return (
