@@ -103,7 +103,14 @@ export interface IRentalRequest {
         title: string;
         location?: string;
         rentPrice: string;
+        availability?: IAvailability;
         property_image?: string[] | null;
+        propertyOwner?: {
+            id?: string;
+            name: string;
+            email: string;
+            phone?: string | null;
+        };
     };
 }
 
