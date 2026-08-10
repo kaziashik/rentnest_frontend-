@@ -1,21 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { confirmPaymentSuccess } from "../../_actions/confirmPaymentSuccess";
 
-export function PaymentSuccessRevalidator() {
+type PaymentSuccessStatusProps = {
+  sessionId: string | null;
+  initialConfirmed: boolean;
+  initialMessage: string;
+};
+
+export function PaymentSuccessStatus({
+  sessionId,
+  initialConfirmed,
+  initialMessage,
+}: PaymentSuccessStatusProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
   const [status, setStatus] = useState<"confirming" | "done" | "error">(
-    "confirming",
+    initialConfirmed ? "done" : sessionId ? "confirming" : "error",
   );
-  const [message, setMessage] = useState(
-    "Confirming payment and updating your rental status...",
-  );
+  const [message, setMessage] = useState(initialMessage);
 
   useEffect(() => {
+    if (initialConfirmed || !sessionId) {
+      router.refresh();
+      return;
+    }
+
     let cancelled = false;
     let attempts = 0;
     const maxAttempts = 5;
@@ -28,19 +39,15 @@ export function PaymentSuccessRevalidator() {
 
       if (cancelled) return;
 
-      if (result.confirmed || !sessionId) {
+      if (result.confirmed) {
         setStatus("done");
-        setMessage(
-          result.confirmed
-            ? "Payment confirmed. Your rental is now Active."
-            : "Payment page ready. Open payment history to see details.",
-        );
+        setMessage("Payment confirmed. Your rental is now Active.");
         router.refresh();
         return;
       }
 
       if (attempts < maxAttempts) {
-        setMessage("Waiting for Stripe confirmation...");
+        setMessage(result.message || "Waiting for Stripe confirmation...");
         setTimeout(runConfirm, 1500);
       } else {
         setStatus("error");
@@ -56,7 +63,7 @@ export function PaymentSuccessRevalidator() {
     return () => {
       cancelled = true;
     };
-  }, [router, sessionId]);
+  }, [initialConfirmed, router, sessionId]);
 
   if (status === "done") {
     return (
