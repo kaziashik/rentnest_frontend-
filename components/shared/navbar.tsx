@@ -39,8 +39,8 @@ const publicNavItems = [
   { label: "Home", href: "/" },
   { label: "Properties", href: "/properties" },
   { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
   { label: "Blog", href: "/blog" },
+  { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -71,7 +71,7 @@ export function Navbar({ user }: NavbarProps) {
     { label: "Contact", href: "/contact" },
   ];
 
-  const navItems = isLoggedIn ? loggedInNav : publicNavItems.slice(0, 4);
+  const navItems = isLoggedIn ? loggedInNav : publicNavItems.slice(0, 3);
 
   const handleLogout = async () => {
     await logout();
@@ -123,13 +123,13 @@ export function Navbar({ user }: NavbarProps) {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/contact" className="flex items-center gap-2">
-                      <Phone className="size-4" /> Contact
+                    <Link href="/services" className="flex items-center gap-2">
+                      <Building2 className="size-4" /> Services
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/services" className="flex items-center gap-2">
-                      <Building2 className="size-4" /> Services
+                    <Link href="/contact" className="flex items-center gap-2">
+                      <Phone className="size-4" /> Contact
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>

@@ -10,20 +10,23 @@ const slides = [
   {
     image:
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "Homes that feel like yours",
-    subtitle: "Browse verified rentals across Malaysia and move in with confidence.",
+    line: "Homes that feel like yours",
+    subtitle:
+      "Browse verified rentals across Malaysia and move in with confidence.",
   },
   {
     image:
       "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "List once. Reach real tenants.",
-    subtitle: "Landlords manage requests, approvals, and payouts from one dashboard.",
+    line: "List once. Reach real tenants.",
+    subtitle:
+      "Landlords manage requests, approvals, and payouts from one dashboard.",
   },
   {
     image:
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "Request. Approve. Pay securely.",
-    subtitle: "Stripe Checkout keeps rent payments transparent for both sides.",
+    line: "Request. Approve. Pay securely.",
+    subtitle:
+      "Stripe Checkout keeps rent payments transparent for both sides.",
   },
 ];
 
@@ -40,12 +43,12 @@ export function HeroSection() {
   const slide = slides[index];
 
   return (
-    <section className="relative h-[65vh] min-h-[420px] max-h-[720px] w-full overflow-hidden">
+    <section className="relative h-[70vh] min-h-[460px] max-h-[760px] w-full overflow-hidden">
       {slides.map((item, i) => (
         <Image
           key={item.image}
           src={item.image}
-          alt={item.title}
+          alt={item.line}
           fill
           priority={i === 0}
           sizes="100vw"
@@ -56,31 +59,37 @@ export function HeroSection() {
         />
       ))}
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/25" />
 
       <div className="container-page relative z-10 flex h-full flex-col justify-center px-4 sm:px-6 lg:px-8">
-        <p className="animate-fade-up mb-3 text-sm font-semibold tracking-[0.2em] text-accent uppercase">
+        <h1 className="animate-fade-up font-display text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
           RentNest
-        </p>
-        <h1
-          key={slide.title}
-          className="animate-fade-up font-display max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl"
-        >
-          {slide.title}
         </h1>
+
+        <p
+          key={slide.line}
+          className="animate-fade-up mt-4 max-w-2xl text-xl font-medium text-white/95 sm:text-2xl lg:text-3xl"
+        >
+          {slide.line}
+        </p>
+
         <p
           key={slide.subtitle}
-          className="animate-fade-up mt-4 max-w-xl text-base text-white/85 sm:text-lg"
-          style={{ animationDelay: "120ms" }}
+          className="animate-fade-up mt-3 max-w-xl text-base text-white/80 sm:text-lg"
+          style={{ animationDelay: "100ms" }}
         >
           {slide.subtitle}
         </p>
+
         <div
           className="animate-fade-up mt-8 flex flex-wrap gap-3"
-          style={{ animationDelay: "200ms" }}
+          style={{ animationDelay: "180ms" }}
         >
           <Link href="/properties">
-            <Button size="lg" className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button
+              size="lg"
+              className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90"
+            >
               <SearchIcon data-icon="inline-start" />
               Explore Properties
             </Button>

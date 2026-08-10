@@ -1,9 +1,12 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UsersIcon, HomeIcon, ListChecksIcon, DollarSignIcon } from "lucide-react";
 import { getAdminDashboard } from "../_actions/getAdminDashboard";
 import { IAdminDashboard } from "@/lib/types";
 import { SimpleBarChart, SimplePieChart } from "@/components/shared/DashboardCharts";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { DashboardActionQueue } from "@/components/shared/DashboardActionQueue";
 
 async function AdminStats() {
   const result = await getAdminDashboard();
@@ -18,8 +21,32 @@ async function AdminStats() {
 
   const data: IAdminDashboard = result.data;
 
+  const actions = [
+    {
+      title: "Pending rental requests",
+      description: "Review open tenant requests across the platform",
+      href: "/admin-dashboard/rentals",
+      count: data.rentalRequests.pending,
+      tone: "warning" as const,
+    },
+    {
+      title: "Manage users",
+      description: "Ban, unban, or review tenants and landlords",
+      href: "/admin-dashboard/users",
+      count: data.users.total,
+    },
+    {
+      title: "All properties",
+      description: "Inspect listings, owners, tenants, and availability",
+      href: "/admin-dashboard/properties",
+      count: data.properties.total,
+    },
+  ];
+
   return (
     <div className="space-y-6">
+      <DashboardActionQueue items={actions} />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -82,10 +109,7 @@ async function AdminStats() {
           data={[
             { label: "Pending", value: data.rentalRequests.pending },
             { label: "Approved", value: data.rentalRequests.approved },
-            {
-              label: "Total",
-              value: data.rentalRequests.total,
-            },
+            { label: "Total", value: data.rentalRequests.total },
           ]}
         />
         <SimplePieChart
@@ -104,6 +128,13 @@ async function AdminStats() {
           ]}
         />
       </div>
+
+      <p className="text-center text-sm text-muted-foreground">
+        Need categories?{" "}
+        <Link href="/admin-dashboard/categories" className="font-medium text-primary hover:underline">
+          Manage listing categories
+        </Link>
+      </p>
     </div>
   );
 }
@@ -111,6 +142,11 @@ async function AdminStats() {
 function AdminStatsSkeleton() {
   return (
     <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />
+        ))}
+      </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-28 animate-pulse rounded-2xl bg-muted" />
@@ -124,21 +160,17 @@ function AdminStatsSkeleton() {
   );
 }
 
-const AdminDashboardPage = () => {
+export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold">Admin Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Platform-wide overview of users, properties, requests, and revenue.
-        </p>
-      </div>
+      <PageHeader
+        title="Admin Dashboard"
+        description="Platform overview — jump into queues that need action."
+      />
 
       <Suspense fallback={<AdminStatsSkeleton />}>
         <AdminStats />
       </Suspense>
     </div>
   );
-};
-
-export default AdminDashboardPage;
+}

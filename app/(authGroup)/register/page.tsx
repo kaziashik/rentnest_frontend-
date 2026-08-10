@@ -9,24 +9,27 @@ export default function RegisterPage() {
 
       <Link
         href="/"
-        className="absolute top-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border bg-card/90 px-3.5 py-2 text-sm font-medium text-foreground shadow-sm backdrop-blur transition hover:bg-card"
+        className="absolute top-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border bg-card/90 px-3.5 py-2 text-sm font-medium text-foreground backdrop-blur transition hover:bg-card"
       >
         <ArrowLeft className="size-4" />
         Back to home
       </Link>
 
-      <div className="relative w-full max-w-md space-y-6 rounded-3xl border bg-card/95 p-8 shadow-xl backdrop-blur">
+      <div className="relative w-full max-w-md space-y-6 rounded-3xl border bg-card/95 p-8 backdrop-blur">
         <div className="space-y-3 text-center">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-xl transition hover:opacity-90"
+            className="inline-flex items-center justify-center gap-2 transition hover:opacity-90"
             aria-label="Go to RentNest home"
           >
             <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <HomeIcon className="size-5" />
             </div>
+            <span className="font-display text-2xl font-semibold tracking-tight text-primary">
+              RentNest
+            </span>
           </Link>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">
+          <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
             Create your account
           </h1>
           <p className="text-sm text-muted-foreground">

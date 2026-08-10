@@ -2,9 +2,11 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SearchIcon, FileTextIcon, ArrowRightIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { getMyRentalRequests } from "../_actions/getMyRentalRequests";
 import { SimpleBarChart, SimplePieChart } from "@/components/shared/DashboardCharts";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { DashboardActionQueue } from "@/components/shared/DashboardActionQueue";
 import { IRentalRequest } from "@/lib/types";
 
 async function DashboardStats() {
@@ -17,8 +19,32 @@ async function DashboardStats() {
   const completedCount = requests.filter((r) => r.status === "COMPLETED").length;
   const rejectedCount = requests.filter((r) => r.status === "REJECTED").length;
 
+  const actions = [
+    {
+      title: "Awaiting payment",
+      description: "Approved requests ready for Stripe checkout",
+      href: "/tenant-dashboard/payments",
+      count: approvedCount,
+      tone: "warning" as const,
+    },
+    {
+      title: "My rental requests",
+      description: "Track pending, active, and completed applications",
+      href: "/tenant-dashboard/requests",
+      count: requests.length,
+    },
+    {
+      title: "Browse homes",
+      description: "Find and request your next rental",
+      href: "/properties",
+      tone: "success" as const,
+    },
+  ];
+
   return (
     <div className="space-y-6">
+      <DashboardActionQueue items={actions} />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="rounded-2xl">
           <CardHeader className="pb-2">
@@ -83,52 +109,36 @@ async function DashboardStats() {
 export default function TenantDashboardPage() {
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-semibold">Welcome back</h1>
-          <p className="text-sm text-muted-foreground">
-            Track requests, payments, and reviews from your tenant workspace.
-          </p>
-        </div>
-        <Link href="/properties">
-          <Button className="rounded-full">
-            <SearchIcon data-icon="inline-start" />
-            Browse Properties
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="Welcome back"
+        description="Track requests, payments, and reviews from your tenant workspace."
+        action={
+          <Link href="/properties">
+            <Button className="rounded-full">
+              <SearchIcon data-icon="inline-start" />
+              Browse Properties
+            </Button>
+          </Link>
+        }
+      />
 
       <Suspense
         fallback={
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="h-64 animate-pulse rounded-2xl bg-muted" />
-            <div className="h-64 animate-pulse rounded-2xl bg-muted" />
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />
+              ))}
+            </div>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="h-64 animate-pulse rounded-2xl bg-muted" />
+              <div className="h-64 animate-pulse rounded-2xl bg-muted" />
+            </div>
           </div>
         }
       >
         <DashboardStats />
       </Suspense>
-
-      <Card className="rounded-2xl">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Recent activity</CardTitle>
-            <Link
-              href="/tenant-dashboard/requests"
-              className="flex items-center gap-1 text-sm text-primary hover:underline"
-            >
-              View all
-              <ArrowRightIcon className="size-3.5" />
-            </Link>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            <FileTextIcon className="mr-1 inline size-4" />
-            Open My Requests for full status history, or Payments to settle approved rentals.
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

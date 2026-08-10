@@ -76,13 +76,6 @@ const RegisterForm = () => {
     return Object.keys(next).length === 0;
   };
 
-  const handleSocial = (provider: "google" | "facebook") => {
-    toast.message(`${provider === "google" ? "Google" : "Facebook"} sign-up`, {
-      description:
-        "Connect OAuth credentials in the backend to enable social registration. Use the form meanwhile.",
-    });
-  };
-
   return (
     <div className="space-y-5">
       <form
@@ -163,24 +156,6 @@ const RegisterForm = () => {
           )}
         </Button>
       </form>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <Button type="button" variant="outline" className="rounded-full" onClick={() => handleSocial("google")}>
-          Google
-        </Button>
-        <Button type="button" variant="outline" className="rounded-full" onClick={() => handleSocial("facebook")}>
-          Facebook
-        </Button>
-      </div>
     </div>
   );
 };

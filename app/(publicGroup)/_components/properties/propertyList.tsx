@@ -24,9 +24,21 @@ export async function PropertyList({
 
   if (!result.data?.data?.length) {
     return (
-      <p className="py-12 text-center text-muted-foreground">
-        No rental properties found.
-      </p>
+      <div className="rounded-2xl border border-dashed bg-muted/20 px-6 py-14 text-center">
+        <p className="font-display text-lg font-semibold tracking-tight">
+          No rentals match your filters
+        </p>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Try a different location, category, or price range — or clear filters
+          to browse all listings.
+        </p>
+        <a
+          href="/properties"
+          className="mt-5 inline-flex rounded-full border bg-card px-4 py-2 text-sm font-medium transition hover:bg-muted"
+        >
+          Clear filters
+        </a>
+      </div>
     );
   }
 
