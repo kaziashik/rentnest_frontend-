@@ -1,21 +1,27 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { revalidateTag } from "next/cache";
-import { getAccessToken, getNewAccessToken } from "@/service/refreshToken";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { getAccessToken } from "@/service/refreshToken";
 
 type PropertyState = {
   success: boolean;
   statusCode?: number;
   message: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 } | null;
+
+function revalidatePropertyCaches() {
+  revalidateTag("my-properties", "max");
+  revalidateTag("properties", "max");
+  revalidatePath("/landlord-dashboard/properties");
+  revalidatePath("/landlord-dashboard");
+  revalidatePath("/properties");
+}
 
 export const createProperty = async (
   prevState: PropertyState,
   formData: FormData,
 ) => {
-  
   const accessToken = await getAccessToken();
 
   if (!accessToken) {
@@ -25,6 +31,8 @@ export const createProperty = async (
     };
   }
 
+  const featuresRaw = String(formData.get("fetures") ?? "");
+
   const payload = {
     title: formData.get("title"),
     location: formData.get("location"),
@@ -32,15 +40,13 @@ export const createProperty = async (
     rentPrice: Number(formData.get("rentPrice")),
     bedRooms: Number(formData.get("bedRooms")),
     bathRooms: Number(formData.get("bathRooms")),
-    fetures: (formData.get("fetures") as string)
+    fetures: featuresRaw
       .split(",")
       .map((f) => f.trim())
       .filter(Boolean),
     availability: formData.get("availability"),
     property_image: formData.getAll("property_image") as string[],
   };
-
-   
 
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/properties/landlord`,
@@ -57,12 +63,8 @@ export const createProperty = async (
   const result = await res.json();
 
   if (result.success) {
-    revalidateTag("my-properties", {
-      expire: 0,
-    });
+    revalidatePropertyCaches();
   }
-
-//   console.log("Creat Property",result);
 
   return result;
 };

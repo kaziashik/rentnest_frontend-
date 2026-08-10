@@ -1,58 +1,74 @@
 "use server";
 
 import { getAccessToken } from "@/service/refreshToken";
-import { revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
-
+import { revalidatePath, revalidateTag } from "next/cache";
 
 type PropertyState = {
-    success: boolean;
-    statusCode?: number;
-    message: string;
-    data?: Record<string, any>;
+  success: boolean;
+  statusCode?: number;
+  message: string;
+  data?: Record<string, unknown>;
 } | null;
 
-export const updateProperty = async (propertyId: string, prevState: PropertyState, formData: FormData) => {
-    const accessToken = await getAccessToken();
-
-    if (!accessToken) {
-        return {
-            success: false,
-            message: "User not logged in!"
-        }
-    }
-
-    const payload = {
-        title: formData.get("title") ?? "",
-        location: formData.get("location") ?? "",
-        categoryId: formData.get("categoryId") ?? "",
-        rentPrice: Number(formData.get("rentPrice")),
-        bedRooms: Number(formData.get("bedRooms")),
-        bathRooms: Number(formData.get("bathRooms")),
-        fetures: (formData.get("fetures") as string)
-            .split(",")
-            .map((f) => f.trim())
-            .filter(Boolean),
-        availability: formData.get("availability"),
-        property_image: (formData.getAll("property_image") as string[])
-            .flatMap((entry) => entry.split(",").map((url) => url.trim()))
-            .filter(Boolean),
-    }
-
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/properties/landlord/${propertyId}`, {
-        method: "PUT",
-        headers: {
-            Cookie: `accessToken=${accessToken}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-       revalidateTag("my-properties", "max");
-    }
-
-    return result;
+function revalidatePropertyCaches() {
+  revalidateTag("my-properties", "max");
+  revalidateTag("properties", "max");
+  revalidatePath("/landlord-dashboard/properties");
+  revalidatePath("/landlord-dashboard");
+  revalidatePath("/properties");
 }
+
+export const updateProperty = async (
+  propertyId: string,
+  prevState: PropertyState,
+  formData: FormData,
+) => {
+  const accessToken = await getAccessToken();
+
+  if (!accessToken) {
+    return {
+      success: false,
+      message: "User not logged in!",
+    };
+  }
+
+  const featuresRaw = String(formData.get("fetures") ?? "");
+
+  const payload = {
+    title: formData.get("title") ?? "",
+    location: formData.get("location") ?? "",
+    categoryId: formData.get("categoryId") ?? "",
+    rentPrice: Number(formData.get("rentPrice")),
+    bedRooms: Number(formData.get("bedRooms")),
+    bathRooms: Number(formData.get("bathRooms")),
+    fetures: featuresRaw
+      .split(",")
+      .map((f) => f.trim())
+      .filter(Boolean),
+    availability: formData.get("availability"),
+    property_image: (formData.getAll("property_image") as string[])
+      .flatMap((entry) => entry.split(",").map((url) => url.trim()))
+      .filter(Boolean),
+  };
+
+  const res = await fetch(
+    `${process.env.BACKEND_API_URL}/api/properties/landlord/${propertyId}`,
+    {
+      method: "PUT",
+      headers: {
+        Cookie: `accessToken=${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  const result = await res.json();
+
+  if (result.success) {
+    revalidatePropertyCaches();
+    revalidatePath(`/propertiesDetails/${propertyId}`);
+  }
+
+  return result;
+};

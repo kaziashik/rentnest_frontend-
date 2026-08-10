@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ICategory, IProperty } from "@/lib/types";
 import { ImageIcon, PencilIcon, PlusIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createProperty } from "../_actions/propertyActions";
@@ -30,6 +31,7 @@ export function PropertyFormDialog({
     triggerLabel,
     triggerClassName,
 }: PropertyFormDialogProps) {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [imageUrls, setImageUrls] = useState<string[]>(property?.property_image ?? []);
     const [uploading, setUploading] = useState(false);
@@ -52,10 +54,11 @@ export function PropertyFormDialog({
         if (state.success) {
             toast.success(state.message || (mode === "edit" ? "Successfully updated the property details" : "Property created successfully"));
             setOpen(false);
+            router.refresh();
         } else {
             toast.error(state.message || "Something went wrong");
         }
-    }, [state, mode]);
+    }, [state, mode, router]);
 
     const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;

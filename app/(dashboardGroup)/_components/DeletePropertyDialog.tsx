@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { deleteProperty } from "../_actions/propertyDelete";
@@ -29,6 +30,7 @@ export function DeletePropertyDialog({
   propertyTitle,
   compact = false,
 }: DeletePropertyDialogProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -39,6 +41,7 @@ export function DeletePropertyDialog({
       if (result.success) {
         toast.success(result.message || "Property deleted successfully.");
         setOpen(false);
+        router.refresh();
       } else {
         toast.error(result.message || "Something went wrong");
       }
