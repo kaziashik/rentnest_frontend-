@@ -26,6 +26,10 @@ const categoryOptions = [
   { label: "House", value: "House" },
   { label: "Studio", value: "Studio" },
   { label: "Room", value: "Room" },
+  { label: "Swimming Pool House", value: "Swimming Pool House" },
+  { label: "Gym House", value: "Gym House" },
+  { label: "Honeymoon Nature View", value: "Honeymoon Nature View" },
+  { label: "Hiking View House", value: "Hiking View House" },
 ];
 
 export function PropertySearchBar() {
