@@ -291,13 +291,163 @@ Full request/response-level mapping of every frontend component to its backend e
 
 ## 💳 Payment Flow
 
-1. Tenant's rental request is **Approved** by the landlord.
-2. Tenant clicks **Pay Now** → frontend calls the backend to create a Stripe Checkout session.
-3. Tenant is redirected to Stripe Checkout to complete payment.
-4. Stripe redirects back to `/payment/success` or `/payment/cancel` based on outcome.
-5. On success, the frontend revalidates payment history and rental request caches — status moves to **Active**.
+# Property Rental Lifecycle
 
-> Only real Stripe Checkout is used — no simulated/fake "Cash on Delivery" or "Pay Later" flows.
+The property availability follows the complete rental lifecycle.
+
+## Availability Rules
+
+The property should follow these rules throughout the rental process:
+
+| Rental Status           | Property Availability |
+| ----------------------- | --------------------- |
+| Rental Request Pending  | **AVAILABLE**         |
+| Rental Request Approved | **AVAILABLE**         |
+| Payment Pending         | **AVAILABLE**         |
+| Payment Completed       | **UNAVAILABLE**       |
+| Rental Active           | **UNAVAILABLE**       |
+| Rental Completed        | **AVAILABLE**         |
+
+### After Successful Payment
+
+When the tenant successfully completes the payment:
+
+```text
+Payment = COMPLETED
+       ↓
+Rental Request = ACTIVE
+       ↓
+Property = UNAVAILABLE
+```
+
+The property must remain unavailable while the rental is active so that other tenants cannot rent the same property.
+
+### When the Rental Is Completed
+
+When the landlord or system marks the active rental as **COMPLETED**, the property must become available again.
+
+```text
+Rental Request = ACTIVE
+       ↓
+Rental Completed
+       ↓
+Rental Request = COMPLETED
+       ↓
+Property = AVAILABLE
+```
+
+This allows the property to be rented again by another tenant.
+
+---
+
+# Complete Property Lifecycle
+
+```text
+                 ┌─────────────────┐
+                 │    AVAILABLE    │
+                 └────────┬────────┘
+                          │
+                          │ Tenant submits request
+                          ↓
+                 ┌─────────────────┐
+                 │     PENDING     │
+                 └────────┬────────┘
+                          │
+                          │ Landlord approves
+                          ↓
+                 ┌─────────────────┐
+                 │    APPROVED     │
+                 │ Property still  │
+                 │    AVAILABLE    │
+                 └────────┬────────┘
+                          │
+                          │ Tenant pays
+                          ↓
+                 ┌─────────────────┐
+                 │     ACTIVE      │
+                 │                 │
+                 │ Property        │
+                 │ UNAVAILABLE     │
+                 └────────┬────────┘
+                          │
+                          │ Rental period ends
+                          │ / marked completed
+                          ↓
+                 ┌─────────────────┐
+                 │    COMPLETED    │
+                 │                 │
+                 │ Property        │
+                 │ AVAILABLE       │
+                 └────────┬────────┘
+                          │
+                          │ Available for
+                          │ another tenant
+                          ↓
+                 ┌─────────────────┐
+                 │    AVAILABLE    │
+                 └─────────────────┘
+```
+
+## Important Business Rule
+
+> **A property should only become `UNAVAILABLE` after the tenant's payment has been successfully confirmed and the rental becomes `ACTIVE`.**
+
+Likewise:
+
+> **When an active rental is marked `COMPLETED`, the property must be changed back to `AVAILABLE`.**
+
+Therefore, the system should **not** leave the property permanently unavailable after a rental has ended.
+
+### Final Lifecycle
+
+```text
+AVAILABLE
+    ↓
+PENDING
+    ↓
+APPROVED
+    ↓
+PAYMENT COMPLETED
+    ↓
+ACTIVE
+    ↓
+UNAVAILABLE
+    ↓
+RENTAL COMPLETED
+    ↓
+AVAILABLE
+```
+
+## Completion Handling
+
+When a rental is marked as `COMPLETED`, the backend should:
+
+1. Update the rental request status to `COMPLETED`.
+2. Update the associated property availability to `AVAILABLE`.
+3. Revalidate the rental request cache.
+4. Revalidate the property cache.
+5. Revalidate the tenant's payment/rental history if required.
+6. Ensure the property appears as available on the property listing page.
+7. Allow a new tenant to submit a rental request for the property.
+
+```text
+Mark Rental as COMPLETED
+          ↓
+Rental Request → COMPLETED
+          ↓
+Property → AVAILABLE
+          ↓
+Revalidate Property Cache
+          ↓
+Revalidate Rental Cache
+          ↓
+Property Listing Updated
+          ↓
+Property Can Be Rented Again
+```
+
+This ensures the property availability correctly follows the entire rental lifecycle rather than remaining `UNAVAILABLE` after the previous rental has ended.
+
 
 ---
 
