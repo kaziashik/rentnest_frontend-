@@ -55,6 +55,7 @@ export function MyRentalRequestCard({
   const showReviewButton =
     request.status === "COMPLETED" && !hasReviewed && !justReviewed;
   const showPayButton = request.status === "APPROVED" && !hasPaid;
+  const isActiveRental = request.status === "ACTIVE" || hasPaid;
 
   const cover =
     normalizeImages(request.property.property_image).find(isValidImageUrl) ?? null;
@@ -156,9 +157,9 @@ export function MyRentalRequestCard({
               </div>
             )}
 
-            {hasPaid && request.status === "APPROVED" && (
-              <Badge variant="secondary" className="rounded-full">
-                Paid
+            {isActiveRental && request.status !== "COMPLETED" && (
+              <Badge className="rounded-full bg-emerald-600 text-white hover:bg-emerald-600">
+                Active rental
               </Badge>
             )}
           </div>

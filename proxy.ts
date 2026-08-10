@@ -16,6 +16,8 @@ const PUBLIC_EXACT = new Set([
   "/terms",
   "/success",
   "/cancel",
+  "/payment/success",
+  "/payment/cancel",
   "/login",
   "/register",
 ]);
@@ -24,6 +26,7 @@ const PUBLIC_PREFIXES = [
   "/propertiesDetails",
   "/blog/",
   "/api/",
+  "/payment/",
 ];
 
 function isPublicPath(pathname: string) {
