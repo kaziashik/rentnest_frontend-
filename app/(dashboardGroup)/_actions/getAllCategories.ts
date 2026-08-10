@@ -15,9 +15,8 @@ export const getAllCategories = async () => {
         headers: {
             Cookie: `accessToken=${accessToken}`
         },
-        cache: "force-cache",
+        cache: "no-store",
         next: {
-            revalidate: 60 * 60 * 24,
             tags: ["categories"]
         }
     });
