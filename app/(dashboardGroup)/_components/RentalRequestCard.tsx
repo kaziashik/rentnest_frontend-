@@ -14,7 +14,7 @@ import {
   MapPinIcon,
   UserIcon,
 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { updateRentalStatus } from "../_actions/updateRentalStatus";
 import { getStatusBadgeClass } from "@/lib/statusBadge";
@@ -55,6 +55,10 @@ export function RentalRequestCard({ request, index = 0 }: RentalRequestCardProps
   const [isPending, startTransition] = useTransition();
   const [localStatus, setLocalStatus] = useState(request.status);
 
+  useEffect(() => {
+    setLocalStatus(request.status);
+  }, [request.status]);
+
   const cover =
     normalizeImages(request.property.property_image).find(isValidImageUrl) ?? null;
   const detailsHref = `/propertiesDetails/${request.property.id}`;
@@ -71,6 +75,17 @@ export function RentalRequestCard({ request, index = 0 }: RentalRequestCardProps
       }
     });
   };
+
+  const statusLabel =
+    localStatus === "APPROVED"
+      ? "Awaiting payment"
+      : localStatus === "ACTIVE"
+        ? "Active"
+        : localStatus === "COMPLETED"
+          ? "Completed"
+          : localStatus === "REJECTED"
+            ? "Rejected"
+            : localStatus;
 
   return (
     <article
@@ -184,13 +199,31 @@ export function RentalRequestCard({ request, index = 0 }: RentalRequestCardProps
                   Reject
                 </Button>
               </>
+            ) : localStatus === "ACTIVE" ? (
+              <>
+                <Badge
+                  variant="outline"
+                  className={`rounded-full ${getStatusBadgeClass("ACTIVE")}`}
+                >
+                  Active
+                </Badge>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-9 rounded-full px-4"
+                  disabled={isPending}
+                  onClick={() => handleStatusChange("COMPLETED")}
+                >
+                  <CheckIcon data-icon="inline-start" />
+                  {isPending ? "Saving..." : "Mark complete"}
+                </Button>
+              </>
             ) : (
-              <Badge variant="secondary" className="rounded-full">
-                {localStatus === "APPROVED"
-                  ? "Accepted"
-                  : localStatus === "REJECTED"
-                    ? "Rejected"
-                    : localStatus}
+              <Badge
+                variant="secondary"
+                className={`rounded-full ${getStatusBadgeClass(localStatus)}`}
+              >
+                {statusLabel}
               </Badge>
             )}
           </div>
