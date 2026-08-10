@@ -1,28 +1,54 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { confirmPaymentSuccess } from "../../_actions/confirmPaymentSuccess";
 
 export function PaymentSuccessRevalidator() {
   const router = useRouter();
-  const [confirming, setConfirming] = useState(true);
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("session_id");
+  const [status, setStatus] = useState<"confirming" | "done" | "error">(
+    "confirming",
+  );
+  const [message, setMessage] = useState(
+    "Confirming payment and updating your rental status...",
+  );
 
   useEffect(() => {
-    let attempts = 0;
-    const maxAttempts = 4;
     let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 5;
 
     const runConfirm = async () => {
       if (cancelled) return;
-      await confirmPaymentSuccess();
+
+      const result = await confirmPaymentSuccess(sessionId);
       attempts += 1;
-      router.refresh();
+
+      if (cancelled) return;
+
+      if (result.confirmed || !sessionId) {
+        setStatus("done");
+        setMessage(
+          result.confirmed
+            ? "Payment confirmed. Your rental is now Active."
+            : "Payment page ready. Open payment history to see details.",
+        );
+        router.refresh();
+        return;
+      }
 
       if (attempts < maxAttempts) {
+        setMessage("Waiting for Stripe confirmation...");
         setTimeout(runConfirm, 1500);
-      } else if (!cancelled) {
-        setConfirming(false);
+      } else {
+        setStatus("error");
+        setMessage(
+          result.message ||
+            "Payment may still be processing. Refresh payments in a moment.",
+        );
+        router.refresh();
       }
     };
 
@@ -30,15 +56,19 @@ export function PaymentSuccessRevalidator() {
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, [router, sessionId]);
 
-  return confirming ? (
-    <p className="text-xs text-muted-foreground">
-      Confirming payment and updating your rental status...
-    </p>
-  ) : (
-    <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
-      Payment confirmed. Your rental is now Active.
-    </p>
-  );
+  if (status === "done") {
+    return (
+      <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+        {message}
+      </p>
+    );
+  }
+
+  if (status === "error") {
+    return <p className="text-xs font-medium text-amber-700">{message}</p>;
+  }
+
+  return <p className="text-xs text-muted-foreground">{message}</p>;
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2Icon } from "lucide-react";
 import { PaymentSuccessRevalidator } from "./PaymentSuccessRevalidator";
@@ -19,7 +20,15 @@ export default function PaymentSuccessPage() {
         </p>
       </div>
 
-      <PaymentSuccessRevalidator />
+      <Suspense
+        fallback={
+          <p className="text-xs text-muted-foreground">
+            Confirming payment and updating your rental status...
+          </p>
+        }
+      >
+        <PaymentSuccessRevalidator />
+      </Suspense>
 
       <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
         <Button asChild className="rounded-full">

@@ -82,8 +82,12 @@ export async function TenantPaymentsList() {
       .map((p) => p.requestId),
   );
 
+  // Hide once paid/active — webhook or success-page confirm both mark ACTIVE + PAID
   const awaitingRaw = requests.filter(
-    (r) => r.status === "APPROVED" && !paidRequestIds.has(r.id),
+    (r) =>
+      r.status === "APPROVED" &&
+      !paidRequestIds.has(r.id) &&
+      r.status !== "ACTIVE",
   );
   const awaitingPayment = await withPropertyMedia(awaitingRaw);
 
