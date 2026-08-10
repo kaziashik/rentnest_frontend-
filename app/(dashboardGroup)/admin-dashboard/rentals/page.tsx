@@ -19,8 +19,8 @@ export default function AdminRentalsPage() {
           Rental Requests
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Requests grouped by property — see the listing photo, landlord, tenant,
-          status, and how many times each home has been rented.
+          Search by property, landlord, or tenant — then browse 5 properties per page
+          with request status and rental history.
         </p>
       </div>
 
