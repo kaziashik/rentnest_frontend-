@@ -13,14 +13,13 @@ function RentalsSkeleton() {
 
 export default function AdminRentalsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="font-display text-2xl font-semibold tracking-tight">
+        <h1 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
           Rental Requests
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Search by property, landlord, or tenant — then browse 5 properties per page
-          with request status and rental history.
+        <p className="text-xs text-muted-foreground sm:text-sm">
+          Grouped by property · 5 per page
         </p>
       </div>
 

@@ -335,110 +335,89 @@ export function AdminRentalsExplorer({ groups }: AdminRentalsExplorerProps) {
   const hasFilters = Boolean(search || status || availability);
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-          <div className="min-w-0 flex-1 space-y-1.5">
-            <label htmlFor="admin-rentals-search" className="text-sm font-medium">
-              Search
-            </label>
-            <div className="relative">
-              <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="admin-rentals-search"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                placeholder="Property, landlord, tenant, email, location…"
-                className="h-10 rounded-full pl-9"
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Useful keywords: property title, city/location, landlord name/email,
-              tenant name/email, or part of a request message.
-            </p>
+    <div className="space-y-3">
+      <div className="rounded-xl border bg-card p-2.5 sm:p-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="relative min-w-0 flex-1">
+            <SearchIcon className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="admin-rentals-search"
+              aria-label="Search rentals"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Property, landlord, tenant…"
+              className="h-9 rounded-full pl-8 text-sm"
+            />
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:w-[26rem]">
-            <div className="space-y-1.5">
-              <label htmlFor="admin-rentals-status" className="text-sm font-medium">
-                Request status
-              </label>
-              <select
-                id="admin-rentals-status"
-                value={status}
-                onChange={(e) => {
-                  setStatus(e.target.value as "" | IRentalStatus);
-                  setPage(1);
-                }}
-                className="h-10 w-full rounded-full border bg-background px-3 text-sm"
-              >
-                {STATUS_OPTIONS.map((option) => (
-                  <option key={option.label} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0">
+            <select
+              id="admin-rentals-status"
+              aria-label="Request status"
+              value={status}
+              onChange={(e) => {
+                setStatus(e.target.value as "" | IRentalStatus);
+                setPage(1);
+              }}
+              className="h-9 w-full rounded-full border bg-background px-2.5 text-xs sm:w-36 sm:text-sm"
+            >
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option.label} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
 
-            <div className="space-y-1.5">
-              <label
-                htmlFor="admin-rentals-availability"
-                className="text-sm font-medium"
-              >
-                Listing availability
-              </label>
-              <select
-                id="admin-rentals-availability"
-                value={availability}
-                onChange={(e) => {
-                  setAvailability(
-                    e.target.value as "" | "AVAILABLE" | "UNAVAILABLE",
-                  );
-                  setPage(1);
-                }}
-                className="h-10 w-full rounded-full border bg-background px-3 text-sm"
-              >
-                <option value="">All listings</option>
-                <option value="AVAILABLE">Available</option>
-                <option value="UNAVAILABLE">Unavailable</option>
-              </select>
-            </div>
+            <select
+              id="admin-rentals-availability"
+              aria-label="Listing availability"
+              value={availability}
+              onChange={(e) => {
+                setAvailability(
+                  e.target.value as "" | "AVAILABLE" | "UNAVAILABLE",
+                );
+                setPage(1);
+              }}
+              className="h-9 w-full rounded-full border bg-background px-2.5 text-xs sm:w-36 sm:text-sm"
+            >
+              <option value="">All listings</option>
+              <option value="AVAILABLE">Available</option>
+              <option value="UNAVAILABLE">Unavailable</option>
+            </select>
           </div>
-        </div>
 
-        {hasFilters && (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          {hasFilters && (
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="sm"
-              className="rounded-full"
+              className="h-9 shrink-0 rounded-full px-2.5"
               onClick={clearFilters}
             >
               <XIcon className="size-3.5" />
-              Clear filters
+              Clear
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 text-sm">
-        <span className="rounded-full border bg-muted/40 px-3 py-1.5">
+      <div className="flex flex-wrap gap-1.5 text-xs sm:text-sm">
+        <span className="rounded-full border bg-muted/40 px-2.5 py-1">
           <span className="font-semibold tabular-nums">{filtered.length}</span>{" "}
           <span className="text-muted-foreground">
             propert{filtered.length === 1 ? "y" : "ies"}
           </span>
         </span>
-        <span className="rounded-full border bg-muted/40 px-3 py-1.5">
+        <span className="rounded-full border bg-muted/40 px-2.5 py-1">
           <span className="font-semibold tabular-nums">{totalRequestsShown}</span>{" "}
-          <span className="text-muted-foreground">matching requests</span>
+          <span className="text-muted-foreground">requests</span>
         </span>
-        <span className="rounded-full border bg-muted/40 px-3 py-1.5">
+        <span className="rounded-full border bg-muted/40 px-2.5 py-1">
           <span className="font-semibold tabular-nums">{totalCompleted}</span>{" "}
-          <span className="text-muted-foreground">completed rentals (all)</span>
+          <span className="text-muted-foreground">completed</span>
         </span>
       </div>
 
