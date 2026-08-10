@@ -24,14 +24,6 @@ export function PaymentSuccessStatus() {
     const runConfirm = async () => {
       if (cancelled) return;
 
-      if (!sessionId) {
-        setStatus("error");
-        setMessage(
-          "Missing Stripe session id. Open Payments and use Pay now again if status is stuck.",
-        );
-        return;
-      }
-
       const result = await confirmPaymentSuccess(sessionId);
       attempts += 1;
 

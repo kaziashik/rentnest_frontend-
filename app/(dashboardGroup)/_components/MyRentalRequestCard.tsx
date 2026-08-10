@@ -162,6 +162,24 @@ export function MyRentalRequestCard({
                 Active rental
               </Badge>
             )}
+
+            {request.status === "COMPLETED" && (
+              <Badge
+                variant="outline"
+                className={`rounded-full ${getStatusBadgeClass("COMPLETED")}`}
+              >
+                Completed
+              </Badge>
+            )}
+
+            {request.status === "APPROVED" && !hasPaid && (
+              <Badge
+                variant="outline"
+                className={`rounded-full ${getStatusBadgeClass("APPROVED")}`}
+              >
+                Awaiting payment
+              </Badge>
+            )}
           </div>
         </div>
       </div>
