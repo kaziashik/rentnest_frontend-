@@ -18,9 +18,6 @@ export default function AdminRentalsPage() {
         <h1 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
           Rental Requests
         </h1>
-        <p className="text-xs text-muted-foreground sm:text-sm">
-          Grouped by property · 5 per page
-        </p>
       </div>
 
       <Suspense fallback={<RentalsSkeleton />}>
