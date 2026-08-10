@@ -14,6 +14,7 @@ import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { registerAction } from "../_actions/authAction";
 import { Loader2 } from "lucide-react";
+import { SocialAuthButtons } from "./SocialAuthButtons";
 
 const RegisterForm = () => {
   const [state, action, pending] = useActionState(registerAction, false);
@@ -156,6 +157,8 @@ const RegisterForm = () => {
           )}
         </Button>
       </form>
+
+      <SocialAuthButtons mode="register" />
     </div>
   );
 };

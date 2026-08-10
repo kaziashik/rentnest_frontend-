@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { loginAction } from "../_actions/authAction";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { SocialAuthButtons } from "./SocialAuthButtons";
 
 const DEMO_ACCOUNTS = [
   {
@@ -155,6 +156,8 @@ const LoginForm = () => {
           )}
         </Button>
       </form>
+
+      <SocialAuthButtons mode="login" />
     </div>
   );
 };
