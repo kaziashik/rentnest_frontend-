@@ -1,51 +1,58 @@
 import { Suspense } from "react";
-import { IProperty } from "@/lib/types";
 import { getHouseRentalProperties } from "../../../(publicGroup)/_actions/getHouseRentalNews";
-import { PropertyCard } from "../../../(publicGroup)/_components/properties/propertyCard";
+import {
+  AdminPropertiesExplorer,
+  AdminPropertyRow,
+} from "../../_components/AdminPropertiesExplorer";
 
 async function AllPropertiesList() {
-    const result = await getHouseRentalProperties({ query: {} });
+  const result = await getHouseRentalProperties({
+    query: { limit: "100", page: "1" },
+  });
 
-    if (!result.success || !result.data.data?.length) {
-        return (
-            <p className="py-12 text-center text-muted-foreground">
-                No properties found.
-            </p>
-        );
-    }
-
+  if (!result.success || !result.data.data?.length) {
     return (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {result.data.data.map((property: IProperty) => (
-                <PropertyCard key={property.id} property={property} />
-            ))}
-        </div>
+      <p className="py-12 text-center text-muted-foreground">
+        {result.message || "No properties found."}
+      </p>
     );
+  }
+
+  const properties = result.data.data as AdminPropertyRow[];
+  const categories = [
+    ...new Set(
+      properties
+        .map((p) => p.category?.name)
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ].sort((a, b) => a.localeCompare(b));
+
+  return (
+    <AdminPropertiesExplorer properties={properties} categories={categories} />
+  );
 }
 
 function PropertiesSkeleton() {
-    return (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-64 animate-pulse rounded-2xl bg-muted" />
-            ))}
-        </div>
-    );
+  return (
+    <div className="space-y-3">
+      <div className="h-12 animate-pulse rounded-xl bg-muted" />
+      <div className="h-72 animate-pulse rounded-xl bg-muted" />
+    </div>
+  );
 }
 
 export default function AdminPropertiesPage() {
-    return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-semibold">All Properties</h1>
-                <p className="text-sm text-muted-foreground">
-                    Platform-wide view of all property listings.
-                </p>
-            </div>
+  return (
+    <div className="space-y-4">
+      <div>
+        <h1 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+          All Properties
+        </h1>
+      </div>
 
-            <Suspense fallback={<PropertiesSkeleton />}>
-                <AllPropertiesList />
-            </Suspense>
-        </div>
-    );
+      <Suspense fallback={<PropertiesSkeleton />}>
+        <AllPropertiesList />
+      </Suspense>
+    </div>
+  );
 }
