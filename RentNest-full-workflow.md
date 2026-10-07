@@ -44,7 +44,39 @@ flowchart TD
 
 ---
 
-## 2. Rental status machine
+## 2. How the three roles meet on one rental
+
+```mermaid
+sequenceDiagram
+    participant V as 👀 Visitor
+    participant T as 🏠 Tenant
+    participant L as 🔑 Landlord
+    participant A as 🛡️ Admin
+    participant API as ⚙️ API
+    participant S as 💳 Stripe
+
+    V->>API: 🔍 Browse properties
+    T->>API: 📝 Register and submit rental request
+    API-->>L: Request appears on Rent Requests
+    alt Landlord approves
+        L->>API: ✅ Set APPROVED
+        API-->>API: 🔒 Property UNAVAILABLE
+        T->>API: 💳 Start checkout
+        API->>S: Checkout session
+        S->>API: Webhook payment completed
+        API-->>T: 🟢 Request is ACTIVE
+        L->>API: 🏁 Set COMPLETED
+        T->>API: ⭐ Post review
+    else Landlord rejects
+        L->>API: ❌ Set REJECTED
+    else Dispute or manual step
+        A->>API: 🚫 Ban a user, or move status along the same allowed path
+    end
+```
+
+---
+
+## 3. Rental status machine
 
 These are the only transitions the API allows (`ALLOWED_TRANSITIONS` in the rental service). `REJECTED` and `COMPLETED` cannot move again.
 
@@ -80,7 +112,7 @@ A tenant cannot submit a second request for the same property while one is alrea
 
 ---
 
-## 3. Public user flow
+## 4. Public user flow
 
 Anyone can use the public site without an account.
 
@@ -114,7 +146,7 @@ Public property search uses `GET /api/properties` with `location`, `minPrice`, `
 
 ---
 
-## 4. Shared account flow
+## 5. Shared account flow
 
 Every logged-in person shares the same account steps. The navbar then sends them to the dashboard that matches their role.
 
@@ -152,7 +184,7 @@ Dashboard pages require a valid session. If `GET /api/users/me` fails, the layou
 
 ---
 
-## 5. Tenant flow
+## 6. Tenant flow
 
 Sidebar: Dashboard, Profile, My Requests, Payments, My Reviews, Rent a House.
 
@@ -228,7 +260,7 @@ sequenceDiagram
 
 ---
 
-## 6. Landlord flow
+## 7. Landlord flow
 
 The landlord is the property owner. Sidebar: Dashboard, Profile, My Properties, Add Property, Rent Requests.
 
@@ -272,7 +304,7 @@ Landlord property routes:
 
 ---
 
-## 7. Admin flow
+## 8. Admin flow
 
 Admin accounts are not created from the register form. Sidebar: Dashboard, Profile, Users, Categories, All Properties, Rental Requests.
 
@@ -322,38 +354,6 @@ flowchart LR
 
     classDef admin fill:#ffedd5,stroke:#ea580c,color:#7c2d12
     class A,B,C,D,E,F,G,H,I admin
-```
-
----
-
-## 8. How the three roles meet on one rental
-
-```mermaid
-sequenceDiagram
-    participant V as 👀 Visitor
-    participant T as 🏠 Tenant
-    participant L as 🔑 Landlord
-    participant A as 🛡️ Admin
-    participant API as ⚙️ API
-    participant S as 💳 Stripe
-
-    V->>API: 🔍 Browse properties
-    T->>API: 📝 Register and submit rental request
-    API-->>L: Request appears on Rent Requests
-    alt Landlord approves
-        L->>API: ✅ Set APPROVED
-        API-->>API: 🔒 Property UNAVAILABLE
-        T->>API: 💳 Start checkout
-        API->>S: Checkout session
-        S->>API: Webhook payment completed
-        API-->>T: 🟢 Request is ACTIVE
-        L->>API: 🏁 Set COMPLETED
-        T->>API: ⭐ Post review
-    else Landlord rejects
-        L->>API: ❌ Set REJECTED
-    else Dispute or manual step
-        A->>API: 🚫 Ban a user, or move status along the same allowed path
-    end
 ```
 
 ---
