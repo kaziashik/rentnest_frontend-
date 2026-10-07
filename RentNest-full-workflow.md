@@ -26,7 +26,7 @@ flowchart TD
     K --> L[Tenant pays with Stripe Checkout]
     L --> M{Stripe webhook}
     M -- Payment completed --> N[Payment PAID and status ACTIVE]
-    M -- Checkout cancelled --> O[Stay APPROVED — tenant can pay again]
+    M -- Checkout cancelled --> O["Stay APPROVED - tenant can pay again"]
     N --> P[Landlord or admin marks COMPLETED]
     P --> Q[Tenant writes one review]
 ```
@@ -73,7 +73,7 @@ Pages: `/` (home and listings), `/propertiesDetails/[id]`, `/about`, `/services`
 ```mermaid
 flowchart TD
     A[Open Home] --> B[Search and filter listings]
-    B --> C[Location, price, category, sort, page]
+    B --> C["Location, price, category, sort, page"]
     C --> D[Property cards]
     D --> E[Property details]
     E --> F[Photos, price, owner contact, reviews]
@@ -81,7 +81,7 @@ flowchart TD
     G -- Not logged in --> H[Go to Register or Login]
     G -- Logged in as tenant --> I[Open Request Rental dialog]
     I --> J[Move-in date and message]
-    J --> K[POST /api/rentals]
+    J --> K["POST /api/rentals"]
     H --> L{Choose role}
     L -- Tenant --> M[Tenant dashboard after login]
     L -- Landlord --> N[Landlord dashboard after login]
@@ -99,19 +99,19 @@ Every logged-in person shares the same account steps. The navbar then sends them
 flowchart TD
     A[Register] --> B{Role}
     B -- TENANT or LANDLORD --> C[Password hashed, user ACTIVE]
-    B -- ADMIN --> X[Rejected — admin cannot self-register]
+    B -- ADMIN --> X["Rejected - admin cannot self-register"]
     C --> D[Login with email and password]
     D --> E{Account banned?}
     E -- Yes --> F[Login blocked]
     E -- No --> G[Access token and refresh token cookies]
     G --> H{Role}
-    H -- TENANT --> I[/dashboard]
-    H -- LANDLORD --> J[/landlord-dashboard]
-    H -- ADMIN --> K[/admin-dashboard]
-    G --> L[GET /api/users/me]
-    L --> M[Update own name, email, phone, or password]
+    H -- TENANT --> I["/dashboard"]
+    H -- LANDLORD --> J["/landlord-dashboard"]
+    H -- ADMIN --> K["/admin-dashboard"]
+    G --> L["GET /api/users/me"]
+    L --> M["Update own name, email, phone, or password"]
     G --> N[Access token expired]
-    N --> O[POST /api/auth/refresh-token]
+    N --> O["POST /api/auth/refresh-token"]
     O --> G
     G --> P[Logout clears cookies]
 ```
@@ -126,23 +126,23 @@ Sidebar: Dashboard, Profile, My Requests, Payments, My Reviews, Rent a House.
 
 ```mermaid
 flowchart TD
-    A[Tenant dashboard /dashboard] --> B[Browse listings on Home]
+    A["Tenant dashboard /dashboard"] --> B[Browse listings on Home]
     B --> C[Open property details]
     C --> D{Property AVAILABLE?}
     D -- No --> E[Request blocked]
-    D -- Yes --> F{Already have PENDING, APPROVED, or ACTIVE request?}
+    D -- Yes --> F{"Already have PENDING, APPROVED, or ACTIVE request?"}
     F -- Yes --> E
-    F -- No --> G[Submit request: property, move-in date, message]
+    F -- No --> G["Submit request: property, move-in date, message"]
     G --> H[Status PENDING]
     H --> I[My Requests page]
     I --> J{Landlord response}
-    J -- REJECTED --> K[Request closed — pick another property]
+    J -- REJECTED --> K["Request closed - pick another property"]
     J -- APPROVED --> L[Pay Now]
     L --> M[Stripe Checkout]
     M --> N{Result}
-    N -- Cancel --> O[/cancel — still APPROVED]
+    N -- Cancel --> O["/cancel - still APPROVED"]
     O --> L
-    N -- Success --> P[/success]
+    N -- Success --> P["/success"]
     P --> Q[Webhook writes Payment PAID]
     Q --> R[Status becomes ACTIVE]
     R --> S[Payments page shows history]
@@ -194,7 +194,7 @@ The landlord is the property owner. Sidebar: Dashboard, Profile, My Properties, 
 ```mermaid
 flowchart TD
     A[Landlord dashboard] --> B[Create a listing]
-    B --> C[Title, location, category, rent, rooms, features, images]
+    B --> C["Title, location, category, rent, rooms, features, images"]
     C --> D[Availability starts as AVAILABLE]
     D --> E[My Properties]
     E --> F[Edit or delete own listing]
@@ -231,10 +231,10 @@ Admin accounts are not created from the register form. Sidebar: Dashboard, Profi
 ```mermaid
 flowchart TD
     A[Admin login] --> B[Admin dashboard]
-    B --> C[Counts: users, properties, requests, paid revenue]
+    B --> C["Counts: users, properties, requests, paid revenue"]
     B --> D[Users]
     D --> E{Action}
-    E -- Ban --> F[activeStatus BANNED — login blocked]
+    E -- Ban --> F["activeStatus BANNED - login blocked"]
     E -- Unban --> G[activeStatus ACTIVE]
     E -- Delete --> H[Remove the user account]
     B --> I[Categories]
