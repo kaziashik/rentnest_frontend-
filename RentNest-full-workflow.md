@@ -1,29 +1,13 @@
 # RentNest — Full Workflow
 
+![RentNest presentation poster](RentNest-poster.png)
+
 RentNest is a rental marketplace. Visitors browse listings. A **tenant** requests a property, a **landlord** approves or rejects it, the tenant pays with Stripe, and an **admin** moderates users, categories, listings, and requests.
 
 Roles in the database: `TENANT`, `LANDLORD`, `ADMIN`.
 Registration only allows `TENANT` or `LANDLORD`. Admin accounts are created directly in the database.
 
-## Icon key
 
-| Icon | Used for |
-|---|---|
-| 👀 | Public visitor |
-| 🏠 | Tenant |
-| 🔑 | Landlord |
-| 🛡️ | Admin |
-| 🔍 | Search and browse |
-| 🏢 | Property |
-| 📝 | Rental request |
-| 💳 | Payment |
-| ⭐ | Review |
-| 🔐 | Login and register |
-| ⏳ ✅ ❌ 🟢 🏁 | Pending, approved, rejected, active, completed |
-
-Box colors follow the role: purple for visitors, blue for tenants, green for landlords, orange for admins, yellow for payment.
-
----
 
 ## 1. One-look system flow
 
