@@ -13,10 +13,24 @@ A modern, responsive **Next.js** rental property marketplace. Landlords list and
 
 ![RentNest presentation poster](RentNest-poster.png)
 
-RentNest is a rental marketplace. Visitors browse listings. A **tenant** requests a property, a **landlord** approves or rejects it, the tenant pays with Stripe, and an **admin** moderates users, categories, listings, and requests.
+RentNest — Rental Property Marketplace
 
-Roles in the database: `TENANT`, `LANDLORD`, `ADMIN`.
-Registration only allows `TENANT` or `LANDLORD`. Admin accounts are created directly in the database.
+RentNest is a full-stack rental property marketplace designed to connect tenants with landlords through secure online rental requests and payments. The system has three roles: Tenant, Landlord, and Admin, each with different permissions and responsibilities.
+
+1. Tenant Module(user):
+Tenants can search for properties by location, price range, and category, sort the results by price, and view property details, including photos, owner contact, and reviews. They can submit rental requests with a move-in date and a message, and track the status of each request. After a landlord approves a request, tenants can pay securely with Stripe Checkout. After the rental is completed, tenants can leave a review, and they can view their requests, payments, and reviews through their dashboard.
+
+2. Landlord Module:
+Landlords can create, edit, and delete their property listings, upload images, and manage availability. They receive incoming rental requests from tenants and can approve or reject each one. Once a rental is finished, landlords mark it as completed so the tenant can leave a review.
+
+3. Admin Module:
+Admins moderate the whole platform. They can view all users and ban, unban, or delete them when necessary, manage property categories, and monitor all properties and rental requests. They can also view platform statistics and revenue through their dashboard. Admin accounts are created directly in the database and are not available through public registration.
+
+Technology Stack
+The platform is built as two separate applications.
+
+-Frontend: Next.js (App Router) and TypeScript, with Server Components and Server Actions, shadcn/ui for the interface, and tag-based cache revalidation for data fetching. It also includes role-based route protection with Next.js Middleware, skeleton loaders, error boundaries, and toast notifications.
+-Backend: Express with Prisma and PostgreSQL, JWT authentication (access and refresh tokens) with role-based access, and a strict rental status flow (Pending, Approved, Active, Completed). It also includes Stripe Checkout with webhooks for payment confirmation and image uploads through a server-side proxy to ImgBB.
 
 
 
