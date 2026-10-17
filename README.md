@@ -9,11 +9,11 @@ A modern, responsive **Next.js** rental property marketplace. Landlords list and
 |---|---|
 | **Live Frontend** | [https://rentnest-frontend-theta.vercel.app](https://rentnest-frontend-theta.vercel.app) |
 | **Backend API** | [https://rentnestbackend.vercel.app](https://rentnestbackend.vercel.app) |
-| **GitHub Monorepo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) · [rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **Frontend Code** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
 | **Backend Code** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **API Documentation** | [`resources/docs/RentNest_API_Design_Documentation.md`](./resources/docs/RentNest_API_Design_Documentation.md) |
 | **Postman Collection** | [`resources/postman/RentNest API.postman_collection.json`](./resources/postman/RentNest%20API.postman_collection.json) |
+| **Database Diagram (drawSQL)** | [drawsql.app/teams/kazi-ashikur/diagrams/rentnest](https://drawsql.app/teams/kazi-ashikur/diagrams/rentnest) |
 
 ---
 
@@ -110,6 +110,8 @@ sequenceDiagram
 ```
 
 ![RentNest database schema (drawSQL)](./drawSQL-rentnest.jpg)
+
+🔗 **Live diagram (drawSQL):** [https://drawsql.app/teams/kazi-ashikur/diagrams/rentnest](https://drawsql.app/teams/kazi-ashikur/diagrams/rentnest)
 
 ---
 
@@ -299,6 +301,7 @@ RentNest is a **frontend-only** Next.js application that consumes a separate bac
 | **Frontend Repo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
 | **Backend Repo** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **API Integration Doc** | [`API_INTEGRATION.md`](./API_INTEGRATION.md) |
+| **Database Diagram (drawSQL)** | [drawsql.app/teams/kazi-ashikur/diagrams/rentnest](https://drawsql.app/teams/kazi-ashikur/diagrams/rentnest) |
 
 ## 🛠️ Tech Stack
 
