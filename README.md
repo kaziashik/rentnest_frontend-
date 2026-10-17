@@ -5,12 +5,24 @@ A modern, responsive **Next.js** rental property marketplace. Landlords list and
 [![Live Site](https://img.shields.io/badge/Live-rentnest--frontend--theta.vercel.app-4c8bf5)](https://rentnest-frontend-theta.vercel.app)
 [![Backend API](https://img.shields.io/badge/Backend-rentnestbackend.vercel.app-6cc644)](https://rentnestbackend.vercel.app)
 
+## 🔗 Live Links
+
+| Resource | Link |
+|---|---|
+| **Live Frontend** | [https://rentnest-frontend-theta.vercel.app](https://rentnest-frontend-theta.vercel.app) |
+| **Backend API** | [https://rentnestbackend.vercel.app](https://rentnestbackend.vercel.app) |
+| **GitHub Monorepo** | Separate repos — [frontend](https://github.com/kaziashik/rentnest_frontend-) · [backend](https://github.com/kaziashik/rentnest_backend) |
+| **Frontend Code** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
+| **Backend Code** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
+| **API Documentation** | [`resources/API_DOCUMENTATION.md`](./resources/API_DOCUMENTATION.md) |
+| **Postman Collection** | [`resources/RentNest.postman_collection.json`](./resources/RentNest.postman_collection.json) |
+
 ---
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
 - [Live Links](#-live-links)
+- [Overview](#-overview)
 - [Tech Stack](#-tech-stack)
 - [Roles & Permissions](#-roles--permissions)
 - [Features](#-features)
@@ -32,15 +44,6 @@ RentNest is a **frontend-only** Next.js application that consumes a separate bac
 **Browse → Request → Approve → Pay → Review**, across three roles — **Tenant**, **Landlord**, and **Admin** — with role-based UI rendering and route protection via Next.js Middleware.
 
 ---
-## 🔗 Live Links
-
-| Resource | Link |
-|---|---|
-| **Live Frontend** | [rentnest-frontend-theta.vercel.app](https://rentnest-frontend-theta.vercel.app) |
-| **Backend API** | [rentnestbackend.vercel.app](https://rentnestbackend.vercel.app) |
-| **Frontend Repo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
-| **Backend Repo** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
-| **API Integration Doc** | [`API_INTEGRATION.md`](./API_INTEGRATION.md) |
 
 ## 🛠️ Tech Stack
 
