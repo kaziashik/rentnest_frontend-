@@ -5,13 +5,13 @@ A modern, responsive **Next.js** rental property marketplace. Landlords list and
 [![Live Site](https://img.shields.io/badge/Live-rentnest--frontend--theta.vercel.app-4c8bf5)](https://rentnest-frontend-theta.vercel.app)
 [![Backend API](https://img.shields.io/badge/Backend-rentnestbackend.vercel.app-6cc644)](https://rentnestbackend.vercel.app)
 
-## 🔗 Live Links
+## Live Links
 
 | Resource | Link |
 |---|---|
 | **Live Frontend** | [https://rentnest-frontend-theta.vercel.app](https://rentnest-frontend-theta.vercel.app) |
 | **Backend API** | [https://rentnestbackend.vercel.app](https://rentnestbackend.vercel.app) |
-| **GitHub Monorepo** | Separate repos — [frontend](https://github.com/kaziashik/rentnest_frontend-) · [backend](https://github.com/kaziashik/rentnest_backend) |
+| **GitHub Monorepo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) · [rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **Frontend Code** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
 | **Backend Code** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **API Documentation** | [`resources/API_DOCUMENTATION.md`](./resources/API_DOCUMENTATION.md) |
