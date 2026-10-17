@@ -12,8 +12,8 @@ A modern, responsive **Next.js** rental property marketplace. Landlords list and
 | **GitHub Monorepo** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) · [rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
 | **Frontend Code** | [github.com/kaziashik/rentnest_frontend-](https://github.com/kaziashik/rentnest_frontend-) |
 | **Backend Code** | [github.com/kaziashik/rentnest_backend](https://github.com/kaziashik/rentnest_backend) |
-| **API Documentation** | [`Resources/API_DOCUMENTATION.md`](./Resources/API_DOCUMENTATION.md) |
-| **Postman Collection** | [`Resources/RentNest.postman_collection.json`](./Resources/RentNest.postman_collection.json) |
+| **API Documentation** | [`resources/docs/RentNest_API_Design_Documentation.md`](./resources/docs/RentNest_API_Design_Documentation.md) |
+| **Postman Collection** | [`resources/postman/RentNest API.postman_collection.json`](./resources/postman/RentNest%20API.postman_collection.json) |
 
 ---
 
