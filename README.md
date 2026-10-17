@@ -109,6 +109,8 @@ sequenceDiagram
     end
 ```
 
+![RentNest database schema (drawSQL)](./drawSQL-rentnest.jpg)
+
 ---
 
 ## 3. Rental status machine
